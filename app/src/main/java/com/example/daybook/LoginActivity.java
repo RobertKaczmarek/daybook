@@ -29,6 +29,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -308,20 +320,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+
+            JSONObject json = new JSONObject();
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                json.put("email", mEmail);
+                json.put("password", mPassword);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HttpURLConnection httpcon;
+            String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
+            String data = json.toString();
+            String result = null;
+            try {
+                httpcon = (HttpURLConnection) ((new URL (url).openConnection()));
+                httpcon.setDoOutput(true);
+                httpcon.setRequestProperty("Content-Type", "application/json");
+                httpcon.setRequestProperty("Accept", "application/json");
+                httpcon.setRequestMethod("POST");
+//                httpcon.connect();
+
+                OutputStream os = httpcon.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+                writer.write(data);
+                writer.close();
+                os.close();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(httpcon.getInputStream(), "UTF-8"));
+
+                String line = null;
+                StringBuilder sb = new StringBuilder();
+
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                br.close();
+                result = sb.toString();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+           if (result[0] == "auth_token") onLoginSuccess();
+            else onLoginFail();
 
             // TODO: register the new account here.
             return true;
@@ -345,6 +388,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    private void onLoginSuccess() {
     }
 }
 
