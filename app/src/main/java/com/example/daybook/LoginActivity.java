@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
     private UserLoginTask mAuthTask = null;
+    private JSONObject result;
+
 
     @InjectView(R.id.input_email) EditText _emailText;
     @InjectView(R.id.input_password) EditText _passwordText;
@@ -118,6 +120,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("json", result.toString());
+        setResult(7, intent);
+
         finish();
     }
 
@@ -177,7 +184,6 @@ public class LoginActivity extends AppCompatActivity {
             String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
             String data = json.toString();
             String output = null;
-            JSONObject result = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -212,8 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            if (result.has("auth_token")) return true;
-            else return false;
+            return result.has("auth_token");
         }
     }
 }
