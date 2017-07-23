@@ -1,10 +1,16 @@
 package com.example.daybook;
 
 import android.content.Intent;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -14,9 +20,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
+
+        setDate();
     }
 
     @Override
@@ -39,5 +46,16 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDate() {
+        TextView currentDataTxV = (TextView) findViewById(R.id.dataTxV);
+        String dayName= new SimpleDateFormat("EEEE").format(Calendar.getInstance().getTime());
+        String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+        String month = new SimpleDateFormat("MMMM").format(Calendar.getInstance().getTime());
+
+        String content = "Hello! Today is " + dayName + ", the" + day + ". day of " + month + "!";
+
+        currentDataTxV.setText(content);
     }
 }
