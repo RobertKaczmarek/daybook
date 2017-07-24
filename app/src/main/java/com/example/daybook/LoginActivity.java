@@ -1,4 +1,5 @@
 package com.example.daybook;
+
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         mAuthTask = new UserLoginTask(email, password);
-        mAuthTask.execute((Void) null);
+        mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -183,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
             String data = json.toString();
-            String output = null;
+            String input = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -208,8 +209,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                output = sb.toString();
-                result = new JSONObject(output);
+                input = sb.toString();
+                result = new JSONObject(input);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
