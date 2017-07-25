@@ -26,6 +26,8 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
     private JSONObject auth_token;
     private JSONArray events;
+    private JSONArray notes;
+    private JSONArray alarms;
     private APISyncTask mSyncTask = null;
 
 
@@ -72,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 mSyncTask = new APISyncTask("events");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
 
+                mSyncTask = new APISyncTask("notes");
+                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+                mSyncTask = new APISyncTask("alarms");
+                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -89,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
         currentDataTxV.setText(content);
     }
 
-
-
     private void setEvents() {
         TextView eventsView = (TextView) findViewById(R.id.eventTxV);
 
@@ -104,6 +110,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setNotes() {
+        TextView notesView = (TextView) findViewById(R.id.notesTxV);
+
+        try {
+            JSONObject note = notes.getJSONObject(0);
+            notesView.setText(note.toString());
+        } catch (NullPointerException e) {
+            e.printStackTrace();3
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setAlarms() {
+        TextView alarmsView = (TextView) findViewById(R.id.alatmsTxV);
+
+        try {
+            JSONObject alarm = events.getJSONObject(0);
+            alarmsView.setText(alarm.toString());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -140,7 +171,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     input.close();
                     result = sb.toString();
-                    events = new JSONArray(result);
+
+                    switch (mEndpoint) {
+                        case "events": events = new JSONArray(result); break;
+                        case "notes": notes = new JSONArray(result); break;
+                        case "alarms": alarms = new JSONArray(result); break;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -152,7 +188,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-            setEvents();
+            switch (mEndpoint) {
+                case "events": setEvents(); break;
+                case "notes": setNotes(); break;
+                case "alarms": setAlarms(); break;
+            }
         }
     }
 }
