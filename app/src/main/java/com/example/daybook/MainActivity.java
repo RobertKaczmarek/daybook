@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 String token = data.getStringExtra("json");
                 auth_token = new JSONObject(token);
 
-                setEvents();
+                mSyncTask = new APISyncTask("events");
+                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -93,10 +94,14 @@ public class MainActivity extends AppCompatActivity {
     private void setEvents() {
         TextView eventsView = (TextView) findViewById(R.id.eventTxV);
 
-        mSyncTask = new APISyncTask("events");
-        mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-
-       eventsView.setText(events.toString());
+        try {
+            JSONObject event = events.getJSONObject(0);
+            eventsView.setText(event.toString());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -144,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            setEvents();
         }
     }
 }

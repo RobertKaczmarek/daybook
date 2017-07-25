@@ -122,11 +122,15 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("json", result.toString());
-        setResult(7, intent);
+        try {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("json", result.toString());
+            setResult(7, intent);
 
-        finish();
+            finish();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onLoginFailed() {
