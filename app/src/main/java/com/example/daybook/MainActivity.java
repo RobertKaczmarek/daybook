@@ -9,7 +9,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.support.v4.app.Fragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     private JSONArray alarms;
     private APISyncTask mSyncTask = null;
 
+    public static final String eventExtra = "Event";
+
+    static public ArrayList<Event> myEvents;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivityForResult(intent, 1);
-
-        setDate();
     }
 
     @Override
@@ -64,15 +73,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 7) {
             try {
+                setDate();
+
                 String token = data.getStringExtra("json");
                 auth_token = new JSONObject(token);
 
                 mSyncTask = new APISyncTask("events");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                final EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+                final ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+                eventFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
+                        startSecondActivity(parent, position);
+                    }
+                });
 
                 mSyncTask = new APISyncTask("notes");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -84,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void startSecondActivity(AdapterView<?> parent, int position) {
+        Intent intent = new Intent(this, EventInfoActivity.class);
+        Event tmp = (Event) parent.getItemAtPosition(position);
+
+        intent.putExtra(eventExtra, tmp);
+        startActivity(intent);
     }
 
     private void setDate() {
@@ -98,11 +127,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setEvents() {
-        TextView eventsView = (TextView) findViewById(R.id.eventTxV);
-
         try {
-            JSONObject event = events.getJSONObject(0);
-            eventsView.setText(event.toString());
+            for (int i = 0; i < events.length(); i++) {
+                JSONObject event = events.getJSONObject(i);
+
+                String event_title = event.getString("title");
+                String event_desc = event.getString("description");
+                String event_date = event.getString("date");
+
+                myEvents.add(new Event(event_title, event_desc, event_date));
+
+                EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+                ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+                eventAdapter.notifyDataSetChanged();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -111,24 +149,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setNotes() {
-        TextView notesView = (TextView) findViewById(R.id.notesTxV);
-
         try {
             JSONObject note = notes.getJSONObject(0);
-            notesView.setText(note.toString());
+//            notesView.setText(note.toString());
         } catch (NullPointerException e) {
-            e.printStackTrace();3
+            e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     private void setAlarms() {
-        TextView alarmsView = (TextView) findViewById(R.id.alatmsTxV);
-
         try {
             JSONObject alarm = events.getJSONObject(0);
-            alarmsView.setText(alarm.toString());
+//            alarmsView.setText(alarm.toString());
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (JSONException e) {

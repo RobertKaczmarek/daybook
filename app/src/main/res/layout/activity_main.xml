@@ -37,20 +37,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="EVENTS" />
+                android:text="@string/events" />
 
-            <ListView
-                android:id="@+id/eventListV"
+            <fragment
+                android:id="@+id/eventFragment"
+                android:name="com.example.daybook.EventListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_alignParentTop="true"
+                 />
 
             <TextView
                 android:id="@+id/notesTxV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Notes" />
+                android:text="@string/notes" />
 
             <ListView
                 android:id="@+id/notesListV"
@@ -63,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Alarms" />
+                android:text="@string/alarms" />
 
             <RadioGroup
                 android:id="@+id/alarmsList"
