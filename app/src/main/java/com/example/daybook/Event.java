@@ -43,6 +43,11 @@ public class Event implements Parcelable {
     };
 
     @Override
+    public String toString() {
+        return title;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

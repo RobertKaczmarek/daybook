@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String eventExtra = "Event";
 
     static public ArrayList<Event> myEvents;
+    static {
+        myEvents = new ArrayList<Event>();
+    }
 
 
     @Override
