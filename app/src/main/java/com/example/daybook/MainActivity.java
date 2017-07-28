@@ -6,6 +6,7 @@ import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,12 +31,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
     private JSONObject auth_token;
     private JSONArray events;
     private JSONArray notes;
     private JSONArray alarms;
     private APISyncTask mSyncTask = null;
+
+    private int listItemPosition = -1;
 
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
@@ -99,6 +102,19 @@ public class MainActivity extends AppCompatActivity {
                         startSecondActivity(parent, position, "event");
                     }
                 });
+                eventFr.getListView().setOnItemClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), "Event long clicked.", Toast.LENGTH_LONG).show();
+
+                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "DeleteDialogTag");
+
+                        listItemPosition = position;
+
+                        return true;
+                    }
+                });
 
                 mSyncTask = new APISyncTask("notes");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -109,6 +125,19 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Note selected.", Toast.LENGTH_LONG).show();
                         startSecondActivity(parent, position, "note");
+                    }
+                });
+                noteFr.getListView().setOnItemClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), "Note long clicked.", Toast.LENGTH_LONG).show();
+
+                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "DeleteDialogTag");
+
+                        listItemPosition = position;
+
+                        return true;
                     }
                 });
 
@@ -204,6 +233,18 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDataPositiveClick(DialogFragment dialog) {
+        if (listItemPosition != -1) {
+            
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
