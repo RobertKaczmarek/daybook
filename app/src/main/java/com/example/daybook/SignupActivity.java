@@ -82,19 +82,8 @@ public class SignupActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mAuthTask = new SignupActivity.UserLoginTask(name, email, password);
+        mAuthTask = new SignupActivity.UserLoginTask(name, email, password, progressDialog);
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
     }
 
 
@@ -154,11 +143,13 @@ public class SignupActivity extends AppCompatActivity {
         private final String mName;
         private final String mEmail;
         private final String mPassword;
+        private final ProgressDialog mProgressDialog;
 
-        UserLoginTask(String name, String email, String password) {
+        UserLoginTask(String name, String email, String password, ProgressDialog progressDialog) {
             mName = name;
             mEmail = email;
             mPassword = password;
+            mProgressDialog = progressDialog;
         }
 
         @Override
@@ -206,6 +197,19 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             return true;
-    }
+        }
+
+        protected void onPostExecute(Boolean result) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            // On complete call either onSignupSuccess or onSignupFailed
+                            // depending on success
+                            onSignupSuccess();
+                            // onSignupFailed();
+                            mProgressDialog.dismiss();
+                        }
+                    }, 3000);
+        }
     }
 }
