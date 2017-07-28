@@ -86,7 +86,6 @@ public class SignupActivity extends AppCompatActivity {
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
 
@@ -162,9 +161,9 @@ public class SignupActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/signup";
-            String data = json.toString();
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -175,7 +174,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(data);
+                writer.write(json.toString());
                 writer.close();
                 os.close();
 

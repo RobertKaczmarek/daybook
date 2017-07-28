@@ -87,8 +87,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuthTask = new UserLoginTask(email, password, progressDialog);
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
     }
 
 
@@ -179,9 +177,9 @@ public class LoginActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
-            String data = json.toString();
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -192,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(data);
+                writer.write(json.toString());
                 writer.close();
                 os.close();
 
