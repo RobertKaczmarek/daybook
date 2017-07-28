@@ -3,8 +3,6 @@ package com.example.daybook;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 /**
  * Created by Robert Kaczmarek on 26-Jul-17.
  */

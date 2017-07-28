@@ -6,7 +6,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/titleTextView"
+        android:id="@+id/eventTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -16,31 +16,31 @@
         android:text="@string/titleText" />
 
     <TextView
-        android:id="@+id/dateTextView"
+        android:id="@+id/eventDateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/titleTextView"
+        android:layout_below="@+id/eventTitleTextView"
         android:gravity="center_horizontal"
-        android:layout_alignLeft="@+id/titleTextView"
-        android:layout_alignStart="@+id/titleTextView"
-        android:layout_alignRight="@+id/titleTextView"
-        android:layout_alignEnd="@+id/titleTextView"
+        android:layout_alignLeft="@+id/eventTitleTextView"
+        android:layout_alignStart="@+id/eventTitleTextView"
+        android:layout_alignRight="@+id/eventTitleTextView"
+        android:layout_alignEnd="@+id/eventTitleTextView"
         android:text="@string/dateText" />
 
     <TextView
-        android:id="@+id/descTextView"
+        android:id="@+id/eventDescTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_below="@+id/dateTextView"
+        android:layout_below="@+id/eventDateTextView"
         android:layout_centerInParent="true"
-        android:layout_alignLeft="@+id/dateTextView"
-        android:layout_alignStart="@+id/dateTextView"
-        android:layout_alignRight="@+id/dateTextView"
-        android:layout_alignEnd="@+id/dateTextView"
+        android:layout_alignLeft="@+id/eventDateTextView"
+        android:layout_alignStart="@+id/eventDateTextView"
+        android:layout_alignRight="@+id/eventDateTextView"
+        android:layout_alignEnd="@+id/eventDateTextView"
         android:layout_marginTop="50dp"
         android:text="@string/descText"/>
 </RelativeLayout>

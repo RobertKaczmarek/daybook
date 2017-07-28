@@ -30,9 +30,9 @@ public class EventInfoFragment extends Fragment {
     }
 
     public void displayEvent(Event event) {
-        ((TextView) getActivity().findViewById(R.id.titleTextView)).setText(event.title);
-        ((TextView) getActivity().findViewById(R.id.descTextView)).setText(event.description);
-        ((TextView) getActivity().findViewById(R.id.dateTextView)).setText(event.date);
+        ((TextView) getActivity().findViewById(R.id.eventTitleTextView)).setText(event.title);
+        ((TextView) getActivity().findViewById(R.id.eventDescTextView)).setText(event.description);
+        ((TextView) getActivity().findViewById(R.id.eventDateTextView)).setText(event.date);
     }
 
     @Override
