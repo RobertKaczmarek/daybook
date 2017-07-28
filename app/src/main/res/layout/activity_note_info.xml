@@ -6,10 +6,10 @@
     tools:context="com.example.daybook.EventInfoActivity">
 
     <fragment
-        android:id="@+id/eventDisplayFragment"
-        android:name="com.example.daybook.EventInfoFragment"
+        android:id="@+id/noteDisplayFragment"
+        android:name="com.example.daybook.NoteInfoFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/activity_event_info" />
+        tools:layout="@layout/activity_note_info" />
 
 </FrameLayout>

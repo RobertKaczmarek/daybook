@@ -24,7 +24,8 @@
         <activity
             android:name=".SignupActivity"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".EventInfoActivity"></activity>
+        <activity android:name=".EventInfoActivity" />
+        <activity android:name=".NoteInfoActivity"></activity>
     </application>
 
 </manifest>

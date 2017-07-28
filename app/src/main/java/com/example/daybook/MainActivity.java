@@ -38,10 +38,13 @@ public class MainActivity extends AppCompatActivity {
     private APISyncTask mSyncTask = null;
 
     public static final String eventExtra = "Event";
+    public static final String noteExtra = "Note";
 
     static public ArrayList<Event> myEvents;
+    static public ArrayList<Note> myNotes;
     static {
         myEvents = new ArrayList<Event>();
+        myNotes = new ArrayList<Note>();
     }
 
 
@@ -93,12 +96,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
-                        startSecondActivity(parent, position);
+                        startSecondActivity(parent, position, "event");
                     }
                 });
 
                 mSyncTask = new APISyncTask("notes");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                final NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                final ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                noteFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), "Note selected.", Toast.LENGTH_LONG).show();
+                        startSecondActivity(parent, position, "note");
+                    }
+                });
 
                 mSyncTask = new APISyncTask("alarms");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -109,11 +121,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startSecondActivity(AdapterView<?> parent, int position) {
-        Intent intent = new Intent(this, EventInfoActivity.class);
-        Event tmp = (Event) parent.getItemAtPosition(position);
+    private void startSecondActivity(AdapterView<?> parent, int position, String action) {
+        Intent intent = null;
+        switch (action) {
+            case "event": {
+                intent = new Intent(this, EventInfoActivity.class);
+                Event tmp = (Event) parent.getItemAtPosition(position);
 
-        intent.putExtra(eventExtra, tmp);
+                intent.putExtra(eventExtra, tmp);
+                break;
+            }
+            case "note": {
+                intent = new Intent(this, NoteInfoActivity.class);
+                Note tmp = (Note) parent.getItemAtPosition(position);
+
+                intent.putExtra(noteExtra, tmp);
+            }
+        }
+
         startActivity(intent);
     }
 
@@ -152,8 +177,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void setNotes() {
         try {
-            JSONObject note = notes.getJSONObject(0);
-//            notesView.setText(note.toString());
+            for (int i = 0; i < notes.length(); i++) {
+                JSONObject note = notes.getJSONObject(i);
+
+                String note_desc = note.getString("description");
+
+                myNotes.add(new Note(note_desc));
+
+                NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                noteAdapter.notifyDataSetChanged();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (JSONException e) {
