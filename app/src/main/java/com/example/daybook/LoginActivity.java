@@ -34,8 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
     private UserLoginTask mAuthTask = null;
-    private JSONObject result;
-
+    private String result;
 
     @InjectView(R.id.input_email) EditText _emailText;
     @InjectView(R.id.input_password) EditText _passwordText;
@@ -105,10 +104,15 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
+                try {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("auth_token", data.getStringExtra("auth_token"));
+                    setResult(7, intent);
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
+                    finish();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -124,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("json", result.toString());
+            intent.putExtra("auth_token", result);
             setResult(7, intent);
 
             finish();
@@ -223,7 +227,8 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            return result.has("auth_token");
+            if (result.has("auth_token")) return true;
+            else return false;
         }
     }
 }
