@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
     private UserLoginTask mAuthTask = null;
-    private String result;
+    private String result = null;
 
     @InjectView(R.id.input_email) EditText _emailText;
     @InjectView(R.id.input_password) EditText _passwordText;
@@ -192,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
             String data = json.toString();
-            String input = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -217,18 +216,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                input = sb.toString();
-                result = new JSONObject(input);
+                result = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            if (result.has("auth_token")) return true;
-            else return false;
+            return true;
         }
     }
 }

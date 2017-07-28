@@ -32,7 +32,7 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     private SignupActivity.UserLoginTask mAuthTask = null;
-    private String result;
+    private String result = null;
 
     @InjectView(R.id.input_name) EditText _nameText;
     @InjectView(R.id.input_email) EditText _emailText;
@@ -174,7 +174,6 @@ public class SignupActivity extends AppCompatActivity {
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/signup";
             String data = json.toString();
-            String output = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
