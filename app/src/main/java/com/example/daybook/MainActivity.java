@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 setDate();
 
-                String token = data.getStringExtra("json");
-                auth_token = new JSONObject(token);
+                auth_token = new JSONObject(data.getStringExtra("auth_token"));
 
                 mSyncTask = new APISyncTask("events");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);

@@ -34,8 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
     private UserLoginTask mAuthTask = null;
-    private JSONObject result;
-
+    private String result = null;
 
     @InjectView(R.id.input_email) EditText _emailText;
     @InjectView(R.id.input_password) EditText _passwordText;
@@ -86,18 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mAuthTask = new UserLoginTask(email, password);
+        mAuthTask = new UserLoginTask(email, password, progressDialog);
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
     }
 
 
@@ -105,10 +94,15 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
+                try {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("auth_token", data.getStringExtra("auth_token"));
+                    setResult(7, intent);
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
+                    finish();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -122,15 +116,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
 
-        try {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("json", result.toString());
-            setResult(7, intent);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("auth_token", result);
+        setResult(7, intent);
 
-            finish();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+        finish();
     }
 
     public void onLoginFailed() {
@@ -170,10 +160,12 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
+        private final ProgressDialog mProgressDialog;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, ProgressDialog dialog) {
             mEmail = email;
             mPassword = password;
+            mProgressDialog = dialog;
         }
 
         @Override
@@ -185,10 +177,9 @@ public class LoginActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
-            String data = json.toString();
-            String input = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -199,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(data);
+                writer.write(json.toString());
                 writer.close();
                 os.close();
 
@@ -213,17 +204,27 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                input = sb.toString();
-                result = new JSONObject(input);
+                result = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            return result.has("auth_token");
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            // On complete call either onLoginSuccess or onLoginFailed
+                            onLoginSuccess();
+                            // onLoginFailed();
+                            mProgressDialog.dismiss();
+                        }
+                    }, 3000);
+
         }
     }
 }
