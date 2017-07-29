@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class Event implements Parcelable {
+    public Integer id;
     public String title;
     public String description;
     public String date;
@@ -16,13 +17,15 @@ public class Event implements Parcelable {
 
     }
 
-    Event(String t, String d, String dt) {
+    Event(Integer i, String t, String d, String dt) {
+        id = i;
         title = t;
         description = d;
         date = dt;
     }
 
     protected Event(Parcel in) {
+        id = in.readInt();
         title = in.readString();
         description = in.readString();
         date = in.readString();
@@ -52,6 +55,7 @@ public class Event implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(date);
