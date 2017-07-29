@@ -188,11 +188,12 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             for (int i = 0; i < events.length(); i++) {
                 JSONObject event = events.getJSONObject(i);
 
+                Integer event_id = event.getInt("id");
                 String event_title = event.getString("title");
                 String event_desc = event.getString("description");
                 String event_date = event.getString("date");
 
-                myEvents.add(new Event(event_title, event_desc, event_date));
+                myEvents.add(new Event(event_id, event_title, event_desc, event_date));
 
                 EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
                 ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
@@ -210,9 +211,10 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             for (int i = 0; i < notes.length(); i++) {
                 JSONObject note = notes.getJSONObject(i);
 
+                Integer note_id = note.getInt("id");
                 String note_desc = note.getString("description");
 
-                myNotes.add(new Note(note_desc));
+                myNotes.add(new Note(note_id, note_desc));
 
                 NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
                 ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
