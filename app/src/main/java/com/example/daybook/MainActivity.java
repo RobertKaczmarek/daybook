@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +27,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
@@ -39,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     private APISyncTask mSyncTask = null;
 
     private int listItemPosition = -1;
+    private String listIdentifier;
 
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         startSecondActivity(parent, position, "event");
                     }
                 });
-                eventFr.getListView().setOnItemClickListener(new AdapterView.OnItemLongClickListener() {
+                eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Event long clicked.", Toast.LENGTH_LONG).show();
@@ -111,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
                         listItemPosition = position;
+                        listIdentifier = "events";
 
                         return true;
                     }
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         startSecondActivity(parent, position, "note");
                     }
                 });
-                noteFr.getListView().setOnItemClickListener(new AdapterView.OnItemLongClickListener() {
+                noteFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Note long clicked.", Toast.LENGTH_LONG).show();
@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
                         listItemPosition = position;
+                        listIdentifier = "notes";
 
                         return true;
                     }
@@ -238,13 +239,29 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     @Override
     public void onDataPositiveClick(DialogFragment dialog) {
         if (listItemPosition != -1) {
-            
+            switch (listIdentifier) {
+                case "events": {
+                    myEvents.remove(listItemPosition);
+                    EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+                    ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+                    eventAdapter.notifyDataSetChanged();
+                    break;
+                }
+                case "notes": {
+                    myNotes.remove(listItemPosition);
+                    NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                    ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                    noteAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
         }
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-
+        View v = findViewById(R.id.dataTxV);
+        Snackbar.make(v, "Delete canceled!", Snackbar.LENGTH_LONG).show();
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {

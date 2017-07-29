@@ -6,7 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.app.DialogFragment;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -50,29 +50,29 @@ public class DeleteDialog extends DialogFragment {
         return builder.create();
     }
 
-    @Override
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    public void onAttach(Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
-            super.onAttach(activity);
-
-            try {
-                mListener = (NoticeDialogListener) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
-            }
-        }
-    }
-
 //    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        Activity activity = getActivity();
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+//    public void onAttach(Activity activity) {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+//            super.onAttach(activity);
 //
-//        try {
-//            mListener = (NoticeDialogListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString() + "must implement NoticeDialogListener");
+//            try {
+//                mListener = (NoticeDialogListener) activity;
+//            } catch (ClassCastException e) {
+//                throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+//            }
 //        }
 //    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = getActivity();
+
+        try {
+            mListener = (NoticeDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + "must implement NoticeDialogListener");
+        }
+    }
 }
