@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     private JSONArray notes;
     private JSONArray alarms;
     private APISyncTask mSyncTask = null;
+    private APIDeleteTask mDeleteTask = null;
 
     private int listItemPosition = -1;
     private String listIdentifier;
@@ -243,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         if (listItemPosition != -1) {
             switch (listIdentifier) {
                 case "events": {
+                    mDeleteTask = new APIDeleteTask("events", myEvents.get(listItemPosition));
+                    mDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
                     myEvents.remove(listItemPosition);
                     EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
                     ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
@@ -250,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     break;
                 }
                 case "notes": {
+                    mDeleteTask = new APIDeleteTask("notes", myNotes.get(listItemPosition));
+                    mDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
                     myNotes.remove(listItemPosition);
                     NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
                     ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
@@ -286,6 +293,81 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
                 httpcon.setRequestMethod("GET");
+                httpcon.connect();
+                resCode = httpcon.getResponseCode();
+
+                if (resCode == HttpURLConnection.HTTP_OK) {
+                    input =  httpcon.getInputStream();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(input, "iso-8859-1"), 8);
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+
+                    while((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    input.close();
+                    result = sb.toString();
+
+                    switch (mEndpoint) {
+                        case "events": events = new JSONArray(result); break;
+                        case "notes": notes = new JSONArray(result); break;
+                        case "alarms": alarms = new JSONArray(result); break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            switch (mEndpoint) {
+                case "events": setEvents(); break;
+                case "notes": setNotes(); break;
+                case "alarms": setAlarms(); break;
+            }
+        }
+    }
+
+    public class APIDeleteTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEndpoint;
+        private Event mEvent = null;
+        private Note mNote = null;
+        String url;
+
+        APIDeleteTask(String endpoint, Object object) {
+            mEndpoint = endpoint;
+
+            switch (object.getClass().getSimpleName()) {
+                case "Event": {
+                    mEvent = (Event) object;
+                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mEvent.id;
+                    break;
+                }
+                case "Note": {
+                    mNote = (Note) object;
+                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mNote.id;
+                    break;
+                }
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            HttpURLConnection httpcon;
+            String result = null;
+            int resCode;
+            InputStream input;
+            try {
+                httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
+                httpcon.setRequestProperty("Content-Type", "application/json");
+                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestMethod("DELETE");
                 httpcon.connect();
                 resCode = httpcon.getResponseCode();
 
