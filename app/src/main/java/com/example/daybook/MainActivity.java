@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         Snackbar.make(v, "Delete canceled!", Snackbar.LENGTH_LONG).show();
     }
 
+
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEndpoint;

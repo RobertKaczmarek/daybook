@@ -31,7 +31,7 @@ import butterknife.InjectView;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    private SignupActivity.UserLoginTask mAuthTask = null;
+    private UserSignupTask mSignupTask = null;
     private String result = null;
 
     @InjectView(R.id.input_name) EditText _nameText;
@@ -82,8 +82,8 @@ public class SignupActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mAuthTask = new SignupActivity.UserLoginTask(name, email, password, progressDialog);
-        mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        mSignupTask = new SignupActivity.UserSignupTask(name, email, password, progressDialog);
+        mSignupTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void onSignupSuccess() {
@@ -133,18 +133,15 @@ public class SignupActivity extends AppCompatActivity {
         return valid;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mName;
         private final String mEmail;
         private final String mPassword;
         private final ProgressDialog mProgressDialog;
 
-        UserLoginTask(String name, String email, String password, ProgressDialog progressDialog) {
+        UserSignupTask(String name, String email, String password, ProgressDialog progressDialog) {
             mName = name;
             mEmail = email;
             mPassword = password;
