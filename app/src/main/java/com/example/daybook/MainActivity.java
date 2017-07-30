@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +61,13 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivityForResult(intent, 1);
+
+        FloatingActionButton addEventButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addNoteButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addAlarmButton = new FloatingActionButton(getBaseContext());
+
+        final FloatingActionsMenu fab = (FloatingActionsMenu) findViewById(R.id.fab);
+
     }
 
     @Override
