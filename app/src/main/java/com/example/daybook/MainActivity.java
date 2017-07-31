@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         TextView currentDataTxV = (TextView) findViewById(R.id.dataTxV);
         String dayName= new SimpleDateFormat("EEEE").format(Calendar.getInstance().getTime());
         String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+        if (day.indexOf("0") == 0) day = day.substring(1, 2);
         String month = new SimpleDateFormat("MMMM").format(Calendar.getInstance().getTime());
 
         String content = "Hello! Today is " + dayName + ", the " + day + ". day of " + month + "!";
