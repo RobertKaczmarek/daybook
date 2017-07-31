@@ -1,6 +1,7 @@
 package com.example.daybook;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
@@ -9,12 +10,16 @@ import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     private int listItemPosition = -1;
     private String listIdentifier;
 
+    public FloatingActionsMenu fab;
+
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
 
@@ -58,6 +65,13 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivityForResult(intent, 1);
+
+        FloatingActionButton addEventButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addNoteButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addAlarmButton = new FloatingActionButton(getBaseContext());
+
+        fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+
     }
 
     @Override
@@ -273,6 +287,21 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         Snackbar.make(v, "Delete canceled!", Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (fab.isExpanded()) {
+
+                Rect outRect = new Rect();
+                fab.getGlobalVisibleRect(outRect);
+
+                if(!outRect.contains((int)event.getRawX(), (int)event.getRawY()))
+                    fab.collapse();
+            }
+        }
+
+        return super.dispatchTouchEvent(event);
+    }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
 
