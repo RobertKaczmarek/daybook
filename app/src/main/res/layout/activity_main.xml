@@ -100,7 +100,8 @@
         app:fab_addButtonPlusIconColor="@color/half_black"
         app:fab_labelStyle="@style/menu_labels_style"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp" >
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_event"
