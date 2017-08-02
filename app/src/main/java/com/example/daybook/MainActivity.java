@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.DialogFragment;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -174,7 +176,31 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 alarmFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Alarm selected.", Toast.LENGTH_LONG).show();
+
+                        AppCompatTextView alarmView = (AppCompatTextView ) view;
+                        if (alarmView.isActivated()) {
+                            Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
+
+                            alarmView.setActivated(false);
+
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                            alarm.checked = false;
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
+
+                            for (int i = 0; i < alarmFr.getListView().getCount(); i++) {
+                                AppCompatTextView tempView = (AppCompatTextView) alarmAdapter.getView(i, null, parent);
+                                tempView.setActivated(false);
+                                Alarm tempAlarm = (Alarm) alarmFr.getListView().getItemAtPosition(i);
+                                tempAlarm.checked = false;
+                            }
+                            alarmView.setActivated(true);
+
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                            alarm.checked = true;
+                        }
+
 
                     }
                 });

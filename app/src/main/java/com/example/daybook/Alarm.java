@@ -12,6 +12,7 @@ import java.util.Date;
 public class Alarm implements Parcelable {
     public Integer id;
     public Date time;
+    boolean checked;
 
     Alarm() {
 
@@ -20,6 +21,7 @@ public class Alarm implements Parcelable {
     Alarm(Integer i, Date t) {
         id = i;
         time = t;
+        checked = false;
     }
 
     protected Alarm(Parcel in) {

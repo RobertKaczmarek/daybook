@@ -23,7 +23,7 @@ public class AlarmListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Alarm>(getActivity(), android.R.layout.simple_list_item_single_choice,
+        setListAdapter(new ArrayAdapter<Alarm>(getActivity(), android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1, MainActivity.myAlarms));
     }
 }
