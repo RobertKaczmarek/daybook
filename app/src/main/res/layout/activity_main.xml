@@ -68,26 +68,12 @@
                 android:layout_weight="1"
                 android:text="@string/alarms" />
 
-            <RadioGroup
-                android:id="@+id/alarmsList"
+            <fragment
+                android:id="@+id/alarmFragment"
+                android:name="com.example.daybook.AlarmListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1" >
-
-                <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="RadioButton" />
-
-                <RadioButton
-                    android:id="@+id/radioButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="RadioButton" />
-            </RadioGroup>
+                android:layout_alignParentTop="true" />
         </LinearLayout>
     </ScrollView>
 

@@ -7,13 +7,18 @@ import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DialogFragment;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
+import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
@@ -31,7 +36,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static java.time.LocalDateTime.parse;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
@@ -49,12 +58,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
+    public static final String alarmExtra = "Alarm";
 
     static public ArrayList<Event> myEvents;
     static public ArrayList<Note> myNotes;
+    static public ArrayList<Alarm> myAlarms;
     static {
         myEvents = new ArrayList<Event>();
         myNotes = new ArrayList<Note>();
+        myAlarms = new ArrayList<Alarm>();
     }
 
 
@@ -159,6 +171,45 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
                 mSyncTask = new APISyncTask("alarms");
                 mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                final AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                final ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                alarmFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        AppCompatTextView alarmView = (AppCompatTextView ) view;
+                        if (alarmView.isActivated()) {
+                            Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
+
+                            alarmView.setActivated(false);
+
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                            alarm.checked = false;
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
+
+                            alarmView.setActivated(true);
+
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                            alarm.checked = true;
+                        }
+                    }
+                });
+                alarmFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        Toast.makeText(getApplicationContext(), "Alarm long clicked.", Toast.LENGTH_LONG).show();
+
+                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "DeleteDialogTag");
+
+                        listItemPosition = position;
+                        listIdentifier = "alarms";
+
+                        return true;
+                    }
+                });
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -245,8 +296,18 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     private void setAlarms() {
         try {
-            JSONObject alarm = events.getJSONObject(0);
-//            alarmsView.setText(alarm.toString());
+            for (int i = 0; i < alarms.length(); i++) {
+                JSONObject alarm = alarms.getJSONObject(i);
+
+                Integer alarm_id = alarm.getInt("id");
+                String alarm_time = alarm.getString("time");
+
+                myAlarms.add(new Alarm(alarm_id, alarm_time));
+
+                AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                alarmAdapter.notifyDataSetChanged();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -276,6 +337,16 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
                     ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
                     noteAdapter.notifyDataSetChanged();
+                    break;
+                }
+                case "alarms": {
+                    mDeleteTask = new APIDeleteTask("alarms", myAlarms.get(listItemPosition));
+                    mDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+                    myAlarms.remove(listItemPosition);
+                    AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                    ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                    alarmAdapter.notifyDataSetChanged();
                     break;
                 }
             }
