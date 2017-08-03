@@ -7,7 +7,6 @@ import android.icu.util.Calendar;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DialogFragment;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
@@ -16,9 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
-import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
@@ -36,11 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
-
-import static java.time.LocalDateTime.parse;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
@@ -58,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
-    public static final String alarmExtra = "Alarm";
 
     static public ArrayList<Event> myEvents;
     static public ArrayList<Note> myNotes;
