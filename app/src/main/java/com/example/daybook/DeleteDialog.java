@@ -20,20 +20,23 @@ public class DeleteDialog extends DialogFragment {
         public void onDialogNegativeClick(DialogFragment dialog);
     }
     NoticeDialogListener mListener;
+    public static String object;
 
 
     public DeleteDialog() {
 
     }
 
-    static DeleteDialog newInstance() {
+    static DeleteDialog newInstance(String obj) {
+        object = obj;
         return new DeleteDialog();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(getResources().getString(R.string.delete_title))
+        builder.setTitle("Deleting " + object + "!")
+                .setMessage(getResources().getString(R.string.delete_title))
                 .setPositiveButton(getResources().getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
