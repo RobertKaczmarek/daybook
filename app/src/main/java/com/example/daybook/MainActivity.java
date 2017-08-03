@@ -122,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Event long clicked.", Toast.LENGTH_LONG).show();
-
                         DialogFragment newFragment = DeleteDialog.newInstance("event");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
@@ -148,8 +146,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 noteFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Note long clicked.", Toast.LENGTH_LONG).show();
-
                         DialogFragment newFragment = DeleteDialog.newInstance("note");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
@@ -190,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 alarmFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Alarm long clicked.", Toast.LENGTH_LONG).show();
-
                         DialogFragment newFragment = DeleteDialog.newInstance("alarm");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
