@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Event long clicked.", Toast.LENGTH_LONG).show();
 
-                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        DialogFragment newFragment = DeleteDialog.newInstance("event");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
                         listItemPosition = position;
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Note long clicked.", Toast.LENGTH_LONG).show();
 
-                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        DialogFragment newFragment = DeleteDialog.newInstance("note");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
                         listItemPosition = position;
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         Toast.makeText(getApplicationContext(), "Alarm long clicked.", Toast.LENGTH_LONG).show();
 
-                        DialogFragment newFragment = DeleteDialog.newInstance();
+                        DialogFragment newFragment = DeleteDialog.newInstance("alarm");
                         newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
                         listItemPosition = position;
@@ -440,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         private final String mEndpoint;
         private Event mEvent = null;
         private Note mNote = null;
+        private Alarm mAlarm = null;
         String url;
 
         APIDeleteTask(String endpoint, Object object) {
@@ -454,6 +455,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 case "Note": {
                     mNote = (Note) object;
                     url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mNote.id;
+                    break;
+                }
+                case "Alarm": {
+                    mAlarm = (Alarm) object;
+                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
                     break;
                 }
             }
@@ -474,23 +480,17 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 resCode = httpcon.getResponseCode();
 
                 if (resCode == HttpURLConnection.HTTP_OK) {
-                    input =  httpcon.getInputStream();
+                    input = httpcon.getInputStream();
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(input, "iso-8859-1"), 8);
                     StringBuilder sb = new StringBuilder();
                     String line;
 
-                    while((line = br.readLine()) != null) {
+                    while ((line = br.readLine()) != null) {
                         sb.append(line);
                     }
                     input.close();
                     result = sb.toString();
-
-                    switch (mEndpoint) {
-                        case "events": events = new JSONArray(result); break;
-                        case "notes": notes = new JSONArray(result); break;
-                        case "alarms": alarms = new JSONArray(result); break;
-                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -499,14 +499,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             }
 
             return true;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            switch (mEndpoint) {
-                case "events": setEvents(); break;
-                case "notes": setNotes(); break;
-                case "alarms": setAlarms(); break;
-            }
         }
     }
 }
