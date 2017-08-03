@@ -1,6 +1,7 @@
 package com.example.daybook;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +31,8 @@ import butterknife.InjectView;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    private SignupActivity.UserLoginTask mAuthTask = null;
+    private UserSignupTask mSignupTask = null;
+    private String result = null;
 
     @InjectView(R.id.input_name) EditText _nameText;
     @InjectView(R.id.input_email) EditText _emailText;
@@ -80,27 +82,17 @@ public class SignupActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        mAuthTask = new SignupActivity.UserLoginTask(name, email, password);
-        mAuthTask.execute((Void) null);
-
-        // TODO: Implement your own signup logic here.
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        mSignupTask = new SignupActivity.UserSignupTask(name, email, password, progressDialog);
+        mSignupTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
-
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("auth_token ", result);
+
+        setResult(RESULT_OK, intent);
         finish();
     }
 
@@ -141,20 +133,19 @@ public class SignupActivity extends AppCompatActivity {
         return valid;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mName;
         private final String mEmail;
         private final String mPassword;
+        private final ProgressDialog mProgressDialog;
 
-        UserLoginTask(String name, String email, String password) {
+        UserSignupTask(String name, String email, String password, ProgressDialog progressDialog) {
             mName = name;
             mEmail = email;
             mPassword = password;
+            mProgressDialog = progressDialog;
         }
 
         @Override
@@ -167,11 +158,9 @@ public class SignupActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             HttpURLConnection httpcon;
             String url = "https://mysterious-dusk-55204.herokuapp.com/signup";
-            String data = json.toString();
-            String output = null;
-            JSONObject result = null;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -182,7 +171,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(data);
+                writer.write(json.toString());
                 writer.close();
                 os.close();
 
@@ -196,18 +185,27 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                output = sb.toString();
-                result = new JSONObject(output);
+                result = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
-            if (result.has("auth_token")) return true;
-            else return false;
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            // On complete call either onSignupSuccess or onSignupFailed
+                            // depending on success
+                            onSignupSuccess();
+                            // onSignupFailed();
+                            mProgressDialog.dismiss();
+                        }
+                    }, 3000);
         }
     }
 }
