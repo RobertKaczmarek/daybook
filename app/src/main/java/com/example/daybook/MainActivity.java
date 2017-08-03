@@ -189,19 +189,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         else {
                             Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
 
-                            for (int i = 0; i < alarmFr.getListView().getCount(); i++) {
-                                AppCompatTextView tempView = (AppCompatTextView) alarmAdapter.getView(i, null, parent);
-                                tempView.setActivated(false);
-                                Alarm tempAlarm = (Alarm) alarmFr.getListView().getItemAtPosition(i);
-                                tempAlarm.checked = false;
-                            }
                             alarmView.setActivated(true);
 
                             Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
                             alarm.checked = true;
                         }
-
-
                     }
                 });
                 alarmFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -307,13 +299,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 JSONObject alarm = alarms.getJSONObject(i);
 
                 Integer alarm_id = alarm.getInt("id");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-                Date alarm_time = new Date();
-                try {
-                    alarm_time = dateFormat.parse(alarm.getString("time"));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                String alarm_time = alarm.getString("time");
 
                 myAlarms.add(new Alarm(alarm_id, alarm_time));
 

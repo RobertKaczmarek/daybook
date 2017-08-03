@@ -11,14 +11,14 @@ import java.util.Date;
 
 public class Alarm implements Parcelable {
     public Integer id;
-    public Date time;
+    public String time;
     boolean checked;
 
     Alarm() {
 
     }
 
-    Alarm(Integer i, Date t) {
+    Alarm(Integer i, String t) {
         id = i;
         time = t;
         checked = false;
@@ -41,7 +41,7 @@ public class Alarm implements Parcelable {
 
     @Override
     public String toString() {
-        return time.toString();
+        return time;
     }
 
     @Override
