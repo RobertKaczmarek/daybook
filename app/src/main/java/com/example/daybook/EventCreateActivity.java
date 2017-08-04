@@ -65,7 +65,7 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
     public static void setDate(Integer day, Integer month, Integer year) {
-        date = day + ":" + month + ":" + year;
+        date = year + "-" + month + "-" + day;
 
         dateView.setText(date);
     }
