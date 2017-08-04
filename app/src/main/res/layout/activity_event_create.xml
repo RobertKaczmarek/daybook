@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/createEventScrollView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/createEventTitle"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:text="@string/createEventTitle"
+            android:textSize="10pt">
+        </TextView>
+
+        <EditText
+            android:id="@+id/eventTitle"
+            android:layout_height="wrap_content"
+            android:hint="@string/eventTitle"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/eventDescription"
+            android:layout_height="210dp"
+            android:hint="@string/eventDescription"
+            android:inputType="textMultiLine"
+            android:lines="10"
+            android:gravity="top"
+            android:paddingLeft="7dp"
+            android:background="@color/monsoon"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/eventDate"
+                android:onClick="showDatePickerDialog" />
+
+            <TextView
+                android:id="@+id/eventDateView"
+                android:layout_width="217dp"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/createEvent"
+            android:layout_height="wrap_content"
+            android:text="@string/createEvent"
+            android:onClick="createEvent"
+            android:layout_width="fill_parent">
+        </Button>
+    </LinearLayout>
+</ScrollView>
