@@ -25,4 +25,7 @@
     <string name="noteDescription">Note\'s description</string>
     <string name="createNote">Create note!</string>
     <string name="createNoteTitle">Enter note\'s detalis</string>
+    <string name="createAlarmTitle">Set alarm\'s time</string>
+    <string name="pick_time">Pick time</string>
+    <string name="createAlarm">Create alarm!</string>
 </resources>
