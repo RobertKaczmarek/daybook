@@ -22,16 +22,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class NoteCreateActivity extends AppCompatActivity {
-    private CreateNoteTask mCreateNoteTask = null;
+public class AlarmCreateActivity extends AppCompatActivity {
+    private CreateAlarmTask mCreateAlarmTask = null;
     private JSONObject auth_token;
 
-    private static String description;
+    private static TextView timeView;
+
+
+    private static String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_create);
+        setContentView(R.layout.activity_alarm_create);
 
         try {
             Intent received_intent = getIntent();
@@ -39,36 +42,48 @@ public class NoteCreateActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        timeView = (TextView) findViewById(R.id.alarmTimeView);
+
     }
 
-    public void createNote(View view) {
-        final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
-        description = noteDesc.getText().toString();
-
-        mCreateNoteTask = new CreateNoteTask(description);
-        mCreateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+    public void createAlarm(View view) {
+        mCreateAlarmTask = new CreateAlarmTask(time);
+        mCreateAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
 
-    public class CreateNoteTask extends AsyncTask<Void, Void, Boolean> {
+    public void showTimePickerDialog(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getFragmentManager(), "timePicker");
+    }
 
-        private final String mDescirption;
+    public static void setTime(Integer hours, Integer minutes) {
+        time = hours + ":" + minutes;
+
+        timeView.setText(time);
+    }
+
+    public class CreateAlarmTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mTime;
         private JSONObject object;
 
-        CreateNoteTask(String desc) {
-            mDescirption = desc;
+        CreateAlarmTask(String time) {
+            mTime = time;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             JSONObject json = new JSONObject();
             try {
-                json.put("description", mDescirption);
+                json.put("time", mTime);
+                json.put("days", 0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/notes";
+            String url = "https://mysterious-dusk-55204.herokuapp.com/alarms";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -109,7 +124,7 @@ public class NoteCreateActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("object", object.toString());
 
-            setResult(2, intent);
+            setResult(3, intent);
             finish();
         }
     }

@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
         FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
-        FloatingActionButton addAlarmButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
 
         fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
@@ -94,6 +94,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 startActivityForResult(createNote, 1);
             }
         }));
+
+        addAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
+                createAlarm.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createAlarm, 1);
+            }
+        });
 
     }
 
@@ -192,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                                 alarmView.setActivated(false);
 
                                 Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
-                                alarm.checked = false;
+                                alarm.set = false;
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
@@ -200,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                                 alarmView.setActivated(true);
 
                                 Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
-                                alarm.checked = true;
+                                alarm.set = true;
                             }
                         }
                     });
@@ -253,6 +262,24 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
                     ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
                     noteAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 3 :
+                try {
+                    JSONObject alarm = new JSONObject(data.getStringExtra("object"));
+
+                    Integer alarm_id = alarm.getInt("id");
+                    String alarm_time = alarm.getString("time");
+
+                    myAlarms.add(new Alarm(alarm_id, alarm_time));
+
+                    AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                    ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                    alarmAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (NullPointerException e) {
