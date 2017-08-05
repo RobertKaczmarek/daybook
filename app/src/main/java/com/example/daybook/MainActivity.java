@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         startActivityForResult(intent, 1);
 
         FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
-        FloatingActionButton addNoteButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
         FloatingActionButton addAlarmButton = new FloatingActionButton(getBaseContext());
 
         fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
@@ -85,6 +85,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 startActivityForResult(createEvent, 1);
             }
         });
+
+        addNoteButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createNote = new Intent(pointer, NoteCreateActivity.class);
+                createNote.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createNote, 1);
+            }
+        }));
 
     }
 
@@ -231,7 +240,25 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
+                break;
+            case 2 :
+                try {
+                    JSONObject note = new JSONObject(data.getStringExtra("object"));
 
+                    Integer note_id = note.getInt("id");
+                    String note_desc = note.getString("description");
+
+                    myNotes.add(new Note(note_id, note_desc));
+
+                    NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                    ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                    noteAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 

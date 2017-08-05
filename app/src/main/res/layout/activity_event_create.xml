@@ -1,66 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/createEventScrollView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:scrollbars="vertical">
-    <LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.daybook.EventCreateActivity">
+
+
+    <TextView
+        android:id="@+id/createEventTitle"
+        android:layout_width="560dp"
+        android:layout_height="wrap_content"
+        android:text="@string/createEventTitle"
+        android:textSize="10pt">
+    </TextView>
+
+    <EditText
+        android:id="@+id/eventTitle"
+        android:layout_height="wrap_content"
+        android:hint="@string/eventTitle"
         android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:layout_height="fill_parent">
+        android:layout_above="@+id/eventDescription"
+        android:layout_toEndOf="@+id/linearLayout"
+        android:layout_marginBottom="17dp">
+    </EditText>
 
-        <TextView
-            android:id="@+id/createEventTitle"
-            android:layout_width="560dp"
-            android:layout_height="wrap_content"
-            android:text="@string/createEventTitle"
-            android:textSize="10pt">
-        </TextView>
+    <EditText
+        android:id="@+id/eventDescription"
+        android:layout_height="210dp"
+        android:hint="@string/eventDescription"
+        android:inputType="textMultiLine"
+        android:lines="10"
+        android:gravity="top"
+        android:paddingLeft="7dp"
+        android:background="@color/monsoon"
+        android:layout_width="fill_parent"
+        android:layout_above="@+id/button"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="28dp">
+    </EditText>
 
-        <EditText
-            android:id="@+id/eventTitle"
-            android:layout_height="wrap_content"
-            android:hint="@string/eventTitle"
-            android:layout_width="fill_parent">
-        </EditText>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout">
 
-        <EditText
-            android:id="@+id/eventDescription"
-            android:layout_height="210dp"
-            android:hint="@string/eventDescription"
-            android:inputType="textMultiLine"
-            android:lines="10"
-            android:gravity="top"
-            android:paddingLeft="7dp"
-            android:background="@color/monsoon"
-            android:layout_width="fill_parent">
-        </EditText>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/eventDate"
-                android:onClick="showDatePickerDialog" />
-
-            <TextView
-                android:id="@+id/eventDateView"
-                android:layout_width="217dp"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </LinearLayout>
-
-
-        <Button
-            android:id="@+id/createEvent"
-            android:layout_height="wrap_content"
-            android:text="@string/createEvent"
-            android:onClick="createEvent"
-            android:layout_width="fill_parent">
-        </Button>
     </LinearLayout>
-</ScrollView>
+
+
+    <Button
+        android:id="@+id/createEvent"
+        android:layout_height="wrap_content"
+        android:text="@string/createEvent"
+        android:onClick="createEvent"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="61dp">
+    </Button>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/createEvent"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="11dp"
+        android:onClick="showDatePickerDialog"
+        android:text="@string/eventDate" />
+
+    <TextView
+        android:id="@+id/eventDateView"
+        android:layout_width="217dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button"
+        android:layout_alignBottom="@+id/button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="29dp"
+        android:text="TextView" />
+</RelativeLayout>
