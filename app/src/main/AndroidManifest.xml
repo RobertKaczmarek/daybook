@@ -25,7 +25,8 @@
             android:name=".SignupActivity"
             android:theme="@style/AppTheme.Dark" />
         <activity android:name=".EventInfoActivity" />
-        <activity android:name=".NoteInfoActivity"></activity>
+        <activity android:name=".NoteInfoActivity" />
+        <activity android:name=".EventCreateActivity"></activity>
     </application>
 
 </manifest>
