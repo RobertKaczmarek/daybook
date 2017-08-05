@@ -26,10 +26,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 public class EventEditActivity extends AppCompatActivity {
-    private Event event;
-    private String title;
-    private String description;
-    private static String date;
+    private static Event event;
 
     private JSONObject auth_token;
 
@@ -69,13 +66,13 @@ public class EventEditActivity extends AppCompatActivity {
     }
 
     public void updateEvent(View view) {
-        final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
-        title =  eventTitle.getText().toString();
+        final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
+        event.title =  eventTitle.getText().toString();
 
-        final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
-        description = eventDesc.getText().toString();
+        final EditText eventDesc = (EditText) findViewById(R.id.eventEditDescription);
+        event.description = eventDesc.getText().toString();
 
-        mUpdateEventTask = new APIUpdateTask(event.id, title, description, date);
+        mUpdateEventTask = new APIUpdateTask(event.id, event.title, event.description, event.date);
         mUpdateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
 
@@ -85,9 +82,9 @@ public class EventEditActivity extends AppCompatActivity {
     }
 
     public static void setDate(Integer day, Integer month, Integer year) {
-        date = year + "-" + month + "-" + day;
+        event.date = year + "-" + month + "-" + day;
 
-        dateView.setText(date);
+        dateView.setText(event.date);
     }
 
     public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
@@ -142,7 +139,6 @@ public class EventEditActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                object = new JSONObject(sb.toString());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -156,7 +152,7 @@ public class EventEditActivity extends AppCompatActivity {
 
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
-            intent.putExtra("object", object.toString());
+            intent.putExtra(MainActivity.eventExtra, event);
 
             setResult(9, intent);
             finish();

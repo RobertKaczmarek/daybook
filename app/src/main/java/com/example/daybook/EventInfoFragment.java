@@ -70,18 +70,15 @@ public class EventInfoFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 9) {
             try {
-                JSONObject event = new JSONObject(data.getStringExtra("object"));
+                Event event = data.getParcelableExtra(MainActivity.eventExtra);
 
-                Integer event_id = event.getInt("id");
-                if (mEvent.id == event_id) {
-                    mEvent.title = event.getString("title");
-                    mEvent.description = event.getString("description");
-                    mEvent.date = event.getString("date");
+                if (mEvent.id == event.id) {
+                    mEvent.title = event.title;
+                    mEvent.description = event.description;
+                    mEvent.date = event.date;
 
                     displayEvent(mEvent);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
