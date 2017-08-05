@@ -297,11 +297,13 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Event tmp = (Event) parent.getItemAtPosition(position);
 
                 intent.putExtra(eventExtra, tmp);
+                intent.putExtra("auth_token", auth_token.toString());
                 break;
             }
             case "note": {
                 intent = new Intent(this, NoteInfoActivity.class);
                 Note tmp = (Note) parent.getItemAtPosition(position);
+                intent.putExtra("auth_token", auth_token.toString());
 
                 intent.putExtra(noteExtra, tmp);
             }

@@ -29,5 +29,6 @@ public class DatePickerFragment extends DialogFragment
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
         EventCreateActivity.setDate(day, month, year);
+        EventEditActivity.setDate(day, month, year);
     }
 }
