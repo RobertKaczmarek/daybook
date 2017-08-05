@@ -22,4 +22,7 @@
     <string name="eventDescription">Event description</string>
     <string name="eventDate">Event date</string>
     <string name="createEvent">Create event!</string>
+    <string name="noteDescription">Note\'s description</string>
+    <string name="createNote">Create note!</string>
+    <string name="createNoteTitle">Enter note\'s detalis</string>
 </resources>
