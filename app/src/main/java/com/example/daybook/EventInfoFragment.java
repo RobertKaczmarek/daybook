@@ -8,12 +8,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.example.daybook.MainActivity.myEvents;
 
 
 /**
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 public class EventInfoFragment extends Fragment {
     private Event mEvent;
     private String auth_token;
+    private Integer position;
 
     public EventInfoFragment() {
         // Required empty public constructor
@@ -63,6 +67,7 @@ public class EventInfoFragment extends Fragment {
         // display the task details
         mEvent = intent.getParcelableExtra(MainActivity.eventExtra);
         auth_token = intent.getStringExtra("auth_token");
+        position = intent.getIntExtra("position", 0);
         if(mEvent != null) displayEvent(mEvent);
     }
 
@@ -76,6 +81,9 @@ public class EventInfoFragment extends Fragment {
                     mEvent.title = event.title;
                     mEvent.description = event.description;
                     mEvent.date = event.date;
+
+                    myEvents.remove(position);
+                    myEvents.set(position, mEvent);
 
                     displayEvent(mEvent);
                 }

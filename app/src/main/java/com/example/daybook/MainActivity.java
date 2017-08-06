@@ -147,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
                             startSecondActivity(parent, position, "event");
+
+                            eventAdapter.notifyDataSetChanged();
                         }
                     });
                     eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -298,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
                 intent.putExtra(eventExtra, tmp);
                 intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("position", position);
                 break;
             }
             case "note": {
@@ -447,6 +450,19 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+        ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+        eventAdapter.notifyDataSetChanged();
+
+        NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+        ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+        noteAdapter.notifyDataSetChanged();
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
