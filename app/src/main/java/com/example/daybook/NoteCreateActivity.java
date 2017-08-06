@@ -23,7 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NoteCreateActivity extends AppCompatActivity {
-    private CreateNoteTask mCreateNoteTask = null;
+    private APICreateTask mCreateNoteTask = null;
     private JSONObject auth_token;
 
     private static String description;
@@ -45,16 +45,16 @@ public class NoteCreateActivity extends AppCompatActivity {
         final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
         description = noteDesc.getText().toString();
 
-        mCreateNoteTask = new CreateNoteTask(description);
+        mCreateNoteTask = new APICreateTask(description);
         mCreateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
 
-    public class CreateNoteTask extends AsyncTask<Void, Void, Boolean> {
+    public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mDescirption;
         private JSONObject object;
 
-        CreateNoteTask(String desc) {
+        APICreateTask(String desc) {
             mDescirption = desc;
         }
 

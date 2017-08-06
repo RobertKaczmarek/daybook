@@ -297,11 +297,14 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Event tmp = (Event) parent.getItemAtPosition(position);
 
                 intent.putExtra(eventExtra, tmp);
+                intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("position", position);
                 break;
             }
             case "note": {
                 intent = new Intent(this, NoteInfoActivity.class);
                 Note tmp = (Note) parent.getItemAtPosition(position);
+                intent.putExtra("auth_token", auth_token.toString());
 
                 intent.putExtra(noteExtra, tmp);
             }
@@ -445,6 +448,19 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+        ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+        eventAdapter.notifyDataSetChanged();
+
+        NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+        ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+        noteAdapter.notifyDataSetChanged();
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {

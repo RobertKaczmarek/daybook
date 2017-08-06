@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.daybook.EventInfoFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -43,4 +44,15 @@
         android:layout_alignEnd="@+id/eventDateTextView"
         android:layout_marginTop="50dp"
         android:text="@string/descText"/>
+
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/eventEditButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_icon="@drawable/ic_create_black_24dp"
+        fab:fab_colorNormal="@color/white"
+        fab:fab_colorPressed="@color/white_pressed"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="8dp"/>
 </RelativeLayout>

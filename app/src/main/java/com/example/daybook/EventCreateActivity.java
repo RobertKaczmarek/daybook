@@ -24,7 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class EventCreateActivity extends AppCompatActivity {
-    private CreateEventTask mCreateEventTask = null;
+    private APICreateTask mCreateEventTask = null;
     private JSONObject auth_token;
 
     private static TextView dateView;
@@ -55,7 +55,7 @@ public class EventCreateActivity extends AppCompatActivity {
         final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
         description = eventDesc.getText().toString();
 
-        mCreateEventTask = new CreateEventTask(title, description, date);
+        mCreateEventTask = new APICreateTask(title, description, date);
         mCreateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
 
@@ -70,14 +70,14 @@ public class EventCreateActivity extends AppCompatActivity {
         dateView.setText(date);
     }
 
-    public class CreateEventTask extends AsyncTask<Void, Void, Boolean> {
+    public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mTitle;
         private final String mDescirption;
         private final String mDate;
         private JSONObject object;
 
-        CreateEventTask(String title, String desc, String date) {
+        APICreateTask(String title, String desc, String date) {
             mTitle = title;
             mDescirption = desc;
             mDate = date;

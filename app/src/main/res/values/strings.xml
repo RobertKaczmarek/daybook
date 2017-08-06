@@ -28,4 +28,6 @@
     <string name="createAlarmTitle">Set alarm\'s time</string>
     <string name="pick_time">Pick time</string>
     <string name="createAlarm">Create alarm!</string>
+    <string name="editEventTitle">Edit event\'s details:</string>
+    <string name="editEvent">Save changes!</string>
 </resources>

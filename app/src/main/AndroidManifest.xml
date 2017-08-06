@@ -28,7 +28,8 @@
         <activity android:name=".NoteInfoActivity" />
         <activity android:name=".EventCreateActivity" />
         <activity android:name=".NoteCreateActivity" />
-        <activity android:name=".AlarmCreateActivity"></activity>
+        <activity android:name=".AlarmCreateActivity" />
+        <activity android:name=".EventEditActivity"></activity>
     </application>
 
 </manifest>
