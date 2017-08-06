@@ -147,8 +147,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
                             startSecondActivity(parent, position, "event");
-
-                            eventAdapter.notifyDataSetChanged();
                         }
                     });
                     eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
