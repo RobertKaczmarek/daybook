@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 intent = new Intent(this, NoteInfoActivity.class);
                 Note tmp = (Note) parent.getItemAtPosition(position);
                 intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("position", position);
 
                 intent.putExtra(noteExtra, tmp);
             }
