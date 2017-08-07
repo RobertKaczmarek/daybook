@@ -29,21 +29,25 @@
                 android:text="@string/current_data"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="18sp"
-                android:textStyle="italic" />
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:background="@color/white"/>
 
             <TextView
                 android:id="@+id/eventTxV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/events" />
+                android:text="@string/events"
+                android:paddingLeft="5dp"
+                android:textColor="#FFF"
+                android:background="@color/oil" />
 
             <fragment
                 android:id="@+id/eventFragment"
                 android:name="com.example.daybook.EventListFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="123dp"
                 android:layout_alignParentTop="true"
                  />
 
@@ -52,13 +56,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/notes" />
+                android:text="@string/notes"
+                android:paddingLeft="5dp"
+                android:textColor="#FFF"
+                android:background="@color/oil"  />
 
             <fragment
                 android:id="@+id/noteFragment"
                 android:name="com.example.daybook.NoteListFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="123dp"
                 android:layout_alignParentTop="true" />
 
             <TextView
@@ -66,13 +73,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/alarms" />
-
+                android:text="@string/alarms"
+                android:paddingLeft="5dp"
+                android:textColor="#FFF"
+                android:background="@color/oil"/>
             <fragment
                 android:id="@+id/alarmFragment"
                 android:name="com.example.daybook.AlarmListFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="123dp"
                 android:layout_alignParentTop="true" />
         </LinearLayout>
     </ScrollView>
