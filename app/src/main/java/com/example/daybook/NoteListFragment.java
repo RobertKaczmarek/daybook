@@ -24,7 +24,7 @@ public class NoteListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Note>(getActivity(), android.R.layout.simple_list_item_1,
+        setListAdapter(new ArrayAdapter<Note>(getActivity(), R.layout.list_layout,
                 android.R.id.text1, MainActivity.myNotes));
     }
 
