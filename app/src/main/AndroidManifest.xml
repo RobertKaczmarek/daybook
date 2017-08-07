@@ -29,7 +29,8 @@
         <activity android:name=".EventCreateActivity" />
         <activity android:name=".NoteCreateActivity" />
         <activity android:name=".AlarmCreateActivity" />
-        <activity android:name=".EventEditActivity"></activity>
+        <activity android:name=".EventEditActivity" />
+        <activity android:name=".NoteEditActivity"></activity>
     </application>
 
 </manifest>
