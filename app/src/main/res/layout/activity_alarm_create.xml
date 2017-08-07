@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.daybook.AlarmCreateActivity">
+
+    <TextView
+        android:id="@+id/createAlarmTitle"
+        android:layout_width="560dp"
+        android:layout_height="wrap_content"
+        android:text="@string/createAlarmTitle"
+        android:textSize="10pt"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"></TextView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_time"
+        android:onClick="showTimePickerDialog"
+        android:layout_below="@+id/createAlarmTitle"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="62dp"
+        android:id="@+id/setAlarmTime" />
+
+    <TextView
+        android:id="@+id/alarmTimeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:text="TextView"
+        android:layout_alignBaseline="@+id/setAlarmTime"
+        android:layout_alignBottom="@+id/setAlarmTime"
+        android:layout_toEndOf="@+id/setAlarmTime" />
+
+    <Button
+        android:id="@+id/createAlarm"
+        android:layout_height="wrap_content"
+        android:text="@string/createAlarm"
+        android:onClick="createAlarm"
+        android:layout_width="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true">
+    </Button>
+
+
+
+</RelativeLayout>

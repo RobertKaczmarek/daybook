@@ -1,6 +1,5 @@
 package com.example.daybook;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -13,10 +12,10 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoteListFragment extends ListFragment {
+public class AlarmListFragment extends ListFragment {
 
 
-    public NoteListFragment() {
+    public AlarmListFragment() {
         // Required empty public constructor
     }
 
@@ -24,8 +23,7 @@ public class NoteListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Note>(getActivity(), android.R.layout.simple_list_item_1,
-                android.R.id.text1, MainActivity.myNotes));
+        setListAdapter(new ArrayAdapter<Alarm>(getActivity(), android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1, MainActivity.myAlarms));
     }
-
 }

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
+    final MainActivity pointer = this;
+
     private JSONObject auth_token;
     private JSONArray events;
     private JSONArray notes;
@@ -52,9 +55,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     static public ArrayList<Event> myEvents;
     static public ArrayList<Note> myNotes;
+    static public ArrayList<Alarm> myAlarms;
     static {
         myEvents = new ArrayList<Event>();
         myNotes = new ArrayList<Note>();
+        myAlarms = new ArrayList<Alarm>();
     }
 
 
@@ -63,14 +68,41 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(pointer, LoginActivity.class);
         startActivityForResult(intent, 1);
 
-        FloatingActionButton addEventButton = new FloatingActionButton(getBaseContext());
-        FloatingActionButton addNoteButton = new FloatingActionButton(getBaseContext());
-        FloatingActionButton addAlarmButton = new FloatingActionButton(getBaseContext());
+        FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
+        FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
+        FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
 
         fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createEvent = new Intent(pointer, EventCreateActivity.class);
+                createEvent.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createEvent, 1);
+            }
+        });
+
+        addNoteButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createNote = new Intent(pointer, NoteCreateActivity.class);
+                createNote.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createNote, 1);
+            }
+        }));
+
+        addAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
+                createAlarm.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createAlarm, 1);
+            }
+        });
 
     }
 
@@ -99,70 +131,161 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 7) {
-            try {
-                setDate();
+        switch (resultCode) {
+            case 7 :
+                try {
+                    setDate();
 
-                auth_token = new JSONObject(data.getStringExtra("auth_token"));
+                    auth_token = new JSONObject(data.getStringExtra("auth_token"));
 
-                mSyncTask = new APISyncTask("events");
-                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-                final EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
-                final ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
-                eventFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
-                        startSecondActivity(parent, position, "event");
-                    }
-                });
-                eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Event long clicked.", Toast.LENGTH_LONG).show();
+                    mSyncTask = new APISyncTask("events");
+                    mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                    final EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+                    final ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+                    eventFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getApplicationContext(), "Event selected.", Toast.LENGTH_LONG).show();
+                            startSecondActivity(parent, position, "event");
+                        }
+                    });
+                    eventFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            DialogFragment newFragment = DeleteDialog.newInstance("event");
+                            newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
-                        DialogFragment newFragment = DeleteDialog.newInstance();
-                        newFragment.show(getFragmentManager(), "DeleteDialogTag");
+                            listItemPosition = position;
+                            listIdentifier = "events";
 
-                        listItemPosition = position;
-                        listIdentifier = "events";
+                            return true;
+                        }
+                    });
 
-                        return true;
-                    }
-                });
+                    mSyncTask = new APISyncTask("notes");
+                    mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                    final NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                    final ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                    noteFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getApplicationContext(), "Note selected.", Toast.LENGTH_LONG).show();
+                            startSecondActivity(parent, position, "note");
+                        }
+                    });
+                    noteFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            DialogFragment newFragment = DeleteDialog.newInstance("note");
+                            newFragment.show(getFragmentManager(), "DeleteDialogTag");
 
-                mSyncTask = new APISyncTask("notes");
-                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-                final NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
-                final ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
-                noteFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Note selected.", Toast.LENGTH_LONG).show();
-                        startSecondActivity(parent, position, "note");
-                    }
-                });
-                noteFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getApplicationContext(), "Note long clicked.", Toast.LENGTH_LONG).show();
+                            listItemPosition = position;
+                            listIdentifier = "notes";
 
-                        DialogFragment newFragment = DeleteDialog.newInstance();
-                        newFragment.show(getFragmentManager(), "DeleteDialogTag");
+                            return true;
+                        }
+                    });
 
-                        listItemPosition = position;
-                        listIdentifier = "notes";
+                    mSyncTask = new APISyncTask("alarms");
+                    mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                    final AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                    final ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                    alarmFr.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                        return true;
-                    }
-                });
+                            AppCompatTextView alarmView = (AppCompatTextView ) view;
+                            if (alarmView.isActivated()) {
+                                Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
 
-                mSyncTask = new APISyncTask("alarms");
-                mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+                                alarmView.setActivated(false);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                                alarm.set = false;
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
+
+                                alarmView.setActivated(true);
+
+                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+                                alarm.set = true;
+                            }
+                        }
+                    });
+                    alarmFr.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            DialogFragment newFragment = DeleteDialog.newInstance("alarm");
+                            newFragment.show(getFragmentManager(), "DeleteDialogTag");
+
+                            listItemPosition = position;
+                            listIdentifier = "alarms";
+
+                            return true;
+                        }
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 1 :
+                try {
+                    JSONObject event = new JSONObject(data.getStringExtra("object"));
+
+                    Integer event_id = event.getInt("id");
+                    String event_title = event.getString("title");
+                    String event_desc = event.getString("description");
+                    String event_date = event.getString("date");
+
+                    myEvents.add(new Event(event_id, event_title, event_desc, event_date));
+
+                    EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+                    ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+                    eventAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 2 :
+                try {
+                    JSONObject note = new JSONObject(data.getStringExtra("object"));
+
+                    Integer note_id = note.getInt("id");
+                    String note_desc = note.getString("description");
+
+                    myNotes.add(new Note(note_id, note_desc));
+
+                    NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+                    ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+                    noteAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 3 :
+                try {
+                    JSONObject alarm = new JSONObject(data.getStringExtra("object"));
+
+                    Integer alarm_id = alarm.getInt("id");
+                    String alarm_time = alarm.getString("time");
+
+                    myAlarms.add(new Alarm(alarm_id, alarm_time));
+
+                    AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                    ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                    alarmAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -174,11 +297,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Event tmp = (Event) parent.getItemAtPosition(position);
 
                 intent.putExtra(eventExtra, tmp);
+                intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("position", position);
                 break;
             }
             case "note": {
                 intent = new Intent(this, NoteInfoActivity.class);
                 Note tmp = (Note) parent.getItemAtPosition(position);
+                intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("position", position);
 
                 intent.putExtra(noteExtra, tmp);
             }
@@ -245,8 +372,18 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     private void setAlarms() {
         try {
-            JSONObject alarm = events.getJSONObject(0);
-//            alarmsView.setText(alarm.toString());
+            for (int i = 0; i < alarms.length(); i++) {
+                JSONObject alarm = alarms.getJSONObject(i);
+
+                Integer alarm_id = alarm.getInt("id");
+                String alarm_time = alarm.getString("time");
+
+                myAlarms.add(new Alarm(alarm_id, alarm_time));
+
+                AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                alarmAdapter.notifyDataSetChanged();
+            }
         } catch (NullPointerException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -278,6 +415,16 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     noteAdapter.notifyDataSetChanged();
                     break;
                 }
+                case "alarms": {
+                    mDeleteTask = new APIDeleteTask("alarms", myAlarms.get(listItemPosition));
+                    mDeleteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+                    myAlarms.remove(listItemPosition);
+                    AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
+                    ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
+                    alarmAdapter.notifyDataSetChanged();
+                    break;
+                }
             }
         }
     }
@@ -302,6 +449,19 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
+        ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
+        eventAdapter.notifyDataSetChanged();
+
+        NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
+        ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
+        noteAdapter.notifyDataSetChanged();
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
@@ -369,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         private final String mEndpoint;
         private Event mEvent = null;
         private Note mNote = null;
+        private Alarm mAlarm = null;
         String url;
 
         APIDeleteTask(String endpoint, Object object) {
@@ -383,6 +544,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 case "Note": {
                     mNote = (Note) object;
                     url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mNote.id;
+                    break;
+                }
+                case "Alarm": {
+                    mAlarm = (Alarm) object;
+                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
                     break;
                 }
             }
@@ -403,23 +569,17 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 resCode = httpcon.getResponseCode();
 
                 if (resCode == HttpURLConnection.HTTP_OK) {
-                    input =  httpcon.getInputStream();
+                    input = httpcon.getInputStream();
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(input, "iso-8859-1"), 8);
                     StringBuilder sb = new StringBuilder();
                     String line;
 
-                    while((line = br.readLine()) != null) {
+                    while ((line = br.readLine()) != null) {
                         sb.append(line);
                     }
                     input.close();
                     result = sb.toString();
-
-                    switch (mEndpoint) {
-                        case "events": events = new JSONArray(result); break;
-                        case "notes": notes = new JSONArray(result); break;
-                        case "alarms": alarms = new JSONArray(result); break;
-                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -428,14 +588,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             }
 
             return true;
-        }
-
-        protected void onPostExecute(Boolean result) {
-            switch (mEndpoint) {
-                case "events": setEvents(); break;
-                case "notes": setNotes(); break;
-                case "alarms": setAlarms(); break;
-            }
         }
     }
 }

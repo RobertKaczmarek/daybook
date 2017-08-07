@@ -17,4 +17,19 @@
     <string name="titleText">Title</string>
     <string name="dateText">Date</string>
     <string name="descText">Description</string>
+    <string name="createEventTitle">Enter events details:</string>
+    <string name="eventTitle">Event title</string>
+    <string name="eventDescription">Event description</string>
+    <string name="eventDate">Event date</string>
+    <string name="createEvent">Create event!</string>
+    <string name="noteDescription">Note\'s description</string>
+    <string name="createNote">Create note!</string>
+    <string name="createNoteTitle">Enter note\'s detalis</string>
+    <string name="createAlarmTitle">Set alarm\'s time</string>
+    <string name="pick_time">Pick time</string>
+    <string name="createAlarm">Create alarm!</string>
+    <string name="editEventTitle">Edit event\'s details:</string>
+    <string name="editEvent">Save changes!</string>
+    <string name="noteEditTitle">Change note\'s details</string>
+    <string name="updateNote">Save changes!</string>
 </resources>

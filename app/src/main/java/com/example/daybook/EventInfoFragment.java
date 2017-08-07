@@ -8,14 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.support.v4.app.FragmentActivity;
+
+import static com.example.daybook.MainActivity.myEvents;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class EventInfoFragment extends Fragment {
-
+    private Event mEvent;
+    private String auth_token;
+    private Integer position;
 
     public EventInfoFragment() {
         // Required empty public constructor
@@ -26,7 +29,19 @@ public class EventInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_info, container, false);
+
+        view.findViewById(R.id.eventEditButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent editEvent = new Intent(getActivity(), EventEditActivity.class);
+                editEvent.putExtra(MainActivity.eventExtra, mEvent);
+                editEvent.putExtra("auth_token", auth_token);
+                startActivityForResult(editEvent, 1);
+            }
+        });
+
+        return view;
     }
 
     public void displayEvent(Event event) {
@@ -43,8 +58,31 @@ public class EventInfoFragment extends Fragment {
         Intent intent = getActivity().getIntent();
 
         // display the task details
-        Event receivedTask = intent.getParcelableExtra(MainActivity.eventExtra);
-        if(receivedTask != null) displayEvent(receivedTask);
+        mEvent = intent.getParcelableExtra(MainActivity.eventExtra);
+        auth_token = intent.getStringExtra("auth_token");
+        position = intent.getIntExtra("position", 0);
+        if(mEvent != null) displayEvent(mEvent);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 9) {
+            try {
+                Event event = data.getParcelableExtra(MainActivity.eventExtra);
+
+                if (mEvent.id == event.id) {
+                    mEvent.title = event.title;
+                    mEvent.description = event.description;
+                    mEvent.date = event.date;
+
+                    myEvents.remove(position);
+                    myEvents.set(position, mEvent);
+
+                    displayEvent(mEvent);
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

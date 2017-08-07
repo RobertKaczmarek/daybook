@@ -24,7 +24,7 @@ public class EventListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Event>(getActivity(), R.layout.list_layout,
+        setListAdapter(new ArrayAdapter<Event>(getActivity(), android.R.layout.simple_list_item_1,
                 android.R.id.text1, MainActivity.myEvents));
     }
 }
