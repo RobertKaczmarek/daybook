@@ -2,12 +2,15 @@ package com.example.daybook;
 
 
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.joda.time.DateTime;
 
 import static com.example.daybook.MainActivity.myEvents;
 
@@ -47,7 +50,7 @@ public class EventInfoFragment extends Fragment {
     public void displayEvent(Event event) {
         ((TextView) getActivity().findViewById(R.id.eventTitleTextView)).setText(event.title);
         ((TextView) getActivity().findViewById(R.id.eventDescTextView)).setText(event.description);
-        ((TextView) getActivity().findViewById(R.id.eventDateTextView)).setText(event.date);
+        ((TextView) getActivity().findViewById(R.id.eventDateTextView)).setText(new DateTime(event.date).toString("dd-MM-yyyy"));
     }
 
     @Override
