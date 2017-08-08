@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,14 +56,7 @@ public class EventEditActivity extends AppCompatActivity {
         descriptionView.setText(event.description);
 
         dateView = (TextView) findViewById(R.id.eventDateEditView);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd");
-        Date event_date_fmt = null;
-        try {
-            event_date_fmt = dateFormat.parse(event.date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        dateView.setText(event_date_fmt.toString());
+        dateView.setText(new DateTime(event.date).toString("dd-MM-yyyy"));
     }
 
     public void updateEvent(View view) {
@@ -82,7 +76,7 @@ public class EventEditActivity extends AppCompatActivity {
     }
 
     public static void setDate(Integer day, Integer month, Integer year) {
-        event.date = year + "-" + month + "-" + day;
+        event.date = day + "-" + month + "-" + year;
 
         dateView.setText(event.date);
     }
