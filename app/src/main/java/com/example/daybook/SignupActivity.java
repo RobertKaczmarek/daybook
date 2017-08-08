@@ -148,7 +148,6 @@ public class SignupActivity extends AppCompatActivity {
             _passwordConfirmationText.setError(null);
         }
 
-
         return valid;
     }
 
