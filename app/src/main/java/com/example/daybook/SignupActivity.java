@@ -185,7 +185,7 @@ public class SignupActivity extends AppCompatActivity {
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
-                httpcon.setRequestProperty("Content-Type","application/json");
+                httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestMethod("POST");
 //                httpcon.connect();
 
