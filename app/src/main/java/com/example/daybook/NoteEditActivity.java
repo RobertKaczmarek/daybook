@@ -45,11 +45,29 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     public void updateNote(View view) {
-        final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
-        note.description = noteDesc.getText().toString();
+        if (validate()) {
+            final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
+            note.description = noteDesc.getText().toString();
 
-        mUpdateNoteTask = new APIUpdateTask(note.id, note.description);
-        mUpdateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+            mUpdateNoteTask = new APIUpdateTask(note.id, note.description);
+            mUpdateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+        }
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
+        String description = noteDesc.getText().toString();
+
+        if (description.isEmpty()) {
+            noteDesc.setError("description cannot be blank!");
+            valid = false;
+        } else {
+            noteDesc.setError(null);
+        }
+
+        return valid;
     }
 
 

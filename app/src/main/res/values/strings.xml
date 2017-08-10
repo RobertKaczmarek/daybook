@@ -32,4 +32,5 @@
     <string name="editEvent">Save changes!</string>
     <string name="noteEditTitle">Change note\'s details</string>
     <string name="updateNote">Save changes!</string>
+    <string name="timeText">Time</string>
 </resources>
