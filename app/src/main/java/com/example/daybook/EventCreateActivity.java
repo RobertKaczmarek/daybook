@@ -49,14 +49,16 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
     public void createEvent(View view) {
-        final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
-        title =  eventTitle.getText().toString();
+        if (validate()) {
+            final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
+            title =  eventTitle.getText().toString();
 
-        final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
-        description = eventDesc.getText().toString();
+            final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
+            description = eventDesc.getText().toString();
 
-        mCreateEventTask = new APICreateTask(title, description, date);
-        mCreateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+            mCreateEventTask = new APICreateTask(title, description, date);
+            mCreateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+        }
     }
 
     public void showDatePickerDialog(View v) {
@@ -69,6 +71,33 @@ public class EventCreateActivity extends AppCompatActivity {
 
         dateView.setText(date);
     }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
+        String title = eventTitle.getText().toString();
+
+        final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
+        String description = eventDesc.getText().toString();
+
+        if (title.isEmpty()) {
+            eventTitle.setError("title cannot be blank!");
+            valid = false;
+        } else {
+            eventTitle.setError(null);
+        }
+
+        if (description.isEmpty()) {
+            eventDesc.setError("description cannot be blank!");
+            valid = false;
+        } else {
+            eventDesc.setError(null);
+        }
+
+        return valid;
+    }
+
 
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 

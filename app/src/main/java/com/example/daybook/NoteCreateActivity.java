@@ -42,12 +42,31 @@ public class NoteCreateActivity extends AppCompatActivity {
     }
 
     public void createNote(View view) {
-        final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
-        description = noteDesc.getText().toString();
+        if (validate()) {
+            final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
+            description = noteDesc.getText().toString();
 
-        mCreateNoteTask = new APICreateTask(description);
-        mCreateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+            mCreateNoteTask = new APICreateTask(description);
+            mCreateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+        }
     }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
+        String description = noteDesc.getText().toString();
+
+        if (description.isEmpty()) {
+            noteDesc.setError("description cannot be blank!");
+            valid = false;
+        } else {
+            noteDesc.setError(null);
+        }
+
+        return valid;
+    }
+
 
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 

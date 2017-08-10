@@ -114,13 +114,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
+        if (result.isEmpty()) {
+            Toast.makeText(getBaseContext(), "Invalid credentials.", Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("auth_token", result);
-        setResult(7, intent);
+            _loginButton.setEnabled(true);
+        }
+        else {
+            _loginButton.setEnabled(true);
 
-        finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("auth_token", result);
+            setResult(7, intent);
+
+            finish();
+        }
     }
 
     public void onLoginFailed() {

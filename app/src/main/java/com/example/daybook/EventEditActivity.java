@@ -60,14 +60,16 @@ public class EventEditActivity extends AppCompatActivity {
     }
 
     public void updateEvent(View view) {
-        final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
-        event.title =  eventTitle.getText().toString();
+        if (validate()) {
+            final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
+            event.title =  eventTitle.getText().toString();
 
-        final EditText eventDesc = (EditText) findViewById(R.id.eventEditDescription);
-        event.description = eventDesc.getText().toString();
+            final EditText eventDesc = (EditText) findViewById(R.id.eventEditDescription);
+            event.description = eventDesc.getText().toString();
 
-        mUpdateEventTask = new APIUpdateTask(event.id, event.title, event.description, event.date);
-        mUpdateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+            mUpdateEventTask = new APIUpdateTask(event.id, event.title, event.description, event.date);
+            mUpdateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+        }
     }
 
     public void showDatePickerDialog(View v) {
@@ -80,6 +82,33 @@ public class EventEditActivity extends AppCompatActivity {
 
         dateView.setText(event.date);
     }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
+        String title = eventTitle.getText().toString();
+
+        final EditText eventDesc = (EditText) findViewById(R.id.eventEditDescription);
+        String description = eventDesc.getText().toString();
+
+        if (title.isEmpty()) {
+            eventTitle.setError("title cannot be blank!");
+            valid = false;
+        } else {
+            eventTitle.setError(null);
+        }
+
+        if (description.isEmpty()) {
+            eventDesc.setError("description cannot be blank!");
+            valid = false;
+        } else {
+            eventDesc.setError(null);
+        }
+
+        return valid;
+    }
+
 
     public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
 
