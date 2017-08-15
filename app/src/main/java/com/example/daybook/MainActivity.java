@@ -1,5 +1,8 @@
 package com.example.daybook;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
@@ -22,6 +25,7 @@ import android.support.design.widget.Snackbar;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +37,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
     final MainActivity pointer = this;
+    private AlarmManager alarmManager;
 
     private JSONObject auth_token;
     private JSONArray events;
@@ -104,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             }
         });
 
+        alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
     }
 
     @Override
@@ -195,21 +202,24 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             AppCompatTextView alarmView = (AppCompatTextView ) view;
-                            if (alarmView.isActivated()) {
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+
+                            if (alarm.set) {
                                 Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(false);
 
-                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
                                 alarm.set = false;
+                                alarmManager.cancel(alarm.intent);
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(true);
 
-                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
                                 alarm.set = true;
+                                alarm.intent = Alarm(5);
+
                             }
                         }
                     });
@@ -389,6 +399,54 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private PendingIntent Alarm(Integer time) {
+//        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+//        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+//
+//        long[] vibrate = new long[] { 1000, 1000, 1000, 1000, 1000 };
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+//        builder.setContentTitle("Scheduled Notification");
+//        builder.setContentText("test");
+//        builder.setSmallIcon(R.drawable.ic_create_black_24dp);
+////        builder.setVibrate(vibrate);
+//        builder.setSound(Settings.System.DEFAULT_ALARM_ALERT_URI);
+//        builder.setPriority(Notification.PRIORITY_HIGH);
+//        Notification not = builder.build();
+//
+//
+//        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, not);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//
+//        long futureInMilis = SystemClock.elapsedRealtime() +10;
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMilis, pendingIntent);
+        //Create a new PendingIntent and add it to the AlarmManager
+        //Create an offset from the current time in which the alarm will go off.
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.add(java.util.Calendar.SECOND, 5);
+
+        ArrayList<Event> todayEvents = new ArrayList<Event>();
+
+        Iterator mEventsIterator = myEvents.iterator();
+        String today = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
+
+        while (mEventsIterator.hasNext()) {
+            Event event = (Event) mEventsIterator.next();
+            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(today)) {
+                todayEvents.add(event);
+            }
+        }
+
+        Intent intent = new Intent(this, AlarmReceiverActivity.class);
+        intent.putExtra(MainActivity.eventExtra, todayEvents);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+        return pendingIntent;
     }
 
     @Override

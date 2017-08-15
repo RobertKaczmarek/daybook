@@ -33,4 +33,6 @@
     <string name="noteEditTitle">Change note\'s details</string>
     <string name="updateNote">Save changes!</string>
     <string name="timeText">Time</string>
+    <string name="alarm_title">It\'s time to wake up!</string>
+    <string name="stop_alarm">Stop alarm</string>
 </resources>

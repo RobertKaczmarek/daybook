@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:weightSum="1">
+
+
+    <TextView
+        android:id="@+id/alarmTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.08"
+        android:background="@color/white"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/alarm_title"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/dayInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.08" />
+
+    <ExpandableListView
+        android:id="@+id/eventExpandable"
+        android:layout_width="match_parent"
+        android:layout_height="178dp" />
+
+    <Button
+        android:id="@+id/stopAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/textView"
+        android:layout_marginBottom="101dp"
+        android:layout_marginStart="30dp"
+        android:text="@string/stop_alarm" />
+
+</LinearLayout>

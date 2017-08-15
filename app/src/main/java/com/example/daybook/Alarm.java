@@ -1,5 +1,6 @@
 package com.example.daybook;
 
+import android.app.PendingIntent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 public class Alarm implements Parcelable {
     public Integer id;
     public String time;
+    public PendingIntent intent;
     boolean set;
 
     Alarm() {
