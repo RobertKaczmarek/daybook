@@ -26,6 +26,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -218,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                                 alarmView.setActivated(true);
 
                                 alarm.set = true;
-                                alarm.intent = Alarm(5);
 
+                                alarm.intent = Alarm(new LocalTime(alarm.time), alarm);
                             }
                         }
                     });
@@ -401,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
-    private PendingIntent Alarm(Integer time) {
+    private PendingIntent Alarm(LocalTime time, Alarm alarm) {
 //        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
 //        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
 //
@@ -423,28 +424,40 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 //        long futureInMilis = SystemClock.elapsedRealtime() +10;
 //        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 //        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMilis, pendingIntent);
-        //Create a new PendingIntent and add it to the AlarmManager
-        //Create an offset from the current time in which the alarm will go off.
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.add(java.util.Calendar.SECOND, 5);
 
         ArrayList<Event> todayEvents = new ArrayList<Event>();
 
         Iterator mEventsIterator = myEvents.iterator();
-        String today = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
+        String todayDate = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
 
         while (mEventsIterator.hasNext()) {
             Event event = (Event) mEventsIterator.next();
-            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(today)) {
+            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(todayDate)) {
                 todayEvents.add(event);
             }
         }
 
         Intent intent = new Intent(this, AlarmReceiverActivity.class);
         intent.putExtra(MainActivity.eventExtra, todayEvents);
+        intent.putExtra("alarm", alarm);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+        DateTime date;
+
+        if (new LocalTime().isAfter(time)) {
+            date = new DateTime()
+                    .withDayOfMonth(new DateTime().getDayOfMonth() + 1)
+                    .withHourOfDay(time.getHourOfDay())
+                    .withMinuteOfHour(time.getMinuteOfHour());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
+        }
+        else {
+            date = new DateTime()
+                    .withHourOfDay(time.getHourOfDay())
+                    .withMinuteOfHour(time.getMinuteOfHour());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
+        }
 
         return pendingIntent;
     }

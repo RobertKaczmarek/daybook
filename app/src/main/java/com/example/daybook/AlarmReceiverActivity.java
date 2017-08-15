@@ -17,14 +17,9 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,20 +45,7 @@ public class AlarmReceiverActivity extends Activity {
         setContentView(R.layout.alarm);
 
         Intent received_intent = getIntent();
-            mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
-
-//            if (events.length() != 0) {
-//                for (int i = 0; i < events.length(); i++) {
-//                    JSONObject event = events.getJSONObject(i);
-//
-//                    Integer event_id = event.getInt("id");
-//                    String event_title = event.getString("title");
-//                    String event_desc = event.getString("description");
-//                    String event_date = event.getString("date");
-//
-//                    mEvents.add(new Event(event_id, event_title, event_desc, event_date));
-//                }
-//            }
+        mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
 
         if (mEvents.isEmpty()) {
             TextView info = (TextView) findViewById(R.id.dayInfo);
