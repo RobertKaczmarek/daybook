@@ -209,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                                 Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(false);
-
                                 alarm.set = false;
                                 alarmManager.cancel(alarm.intent);
                             }
@@ -217,9 +216,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                                 Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(true);
-
                                 alarm.set = true;
-
                                 alarm.intent = Alarm(new LocalTime(alarm.time), alarm);
                             }
                         }
@@ -403,28 +400,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     }
 
     private PendingIntent Alarm(LocalTime time, Alarm alarm) {
-//        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-//        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-//
-//        long[] vibrate = new long[] { 1000, 1000, 1000, 1000, 1000 };
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//        builder.setContentTitle("Scheduled Notification");
-//        builder.setContentText("test");
-//        builder.setSmallIcon(R.drawable.ic_create_black_24dp);
-////        builder.setVibrate(vibrate);
-//        builder.setSound(Settings.System.DEFAULT_ALARM_ALERT_URI);
-//        builder.setPriority(Notification.PRIORITY_HIGH);
-//        Notification not = builder.build();
-//
-//
-//        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, not);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//
-//        long futureInMilis = SystemClock.elapsedRealtime() +10;
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMilis, pendingIntent);
-
         ArrayList<Event> todayEvents = new ArrayList<Event>();
 
         Iterator mEventsIterator = myEvents.iterator();
@@ -444,7 +419,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         DateTime date;
-
         if (new LocalTime().isAfter(time)) {
             date = new DateTime()
                     .withDayOfMonth(new DateTime().getDayOfMonth() + 1)

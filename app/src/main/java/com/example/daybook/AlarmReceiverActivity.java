@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -22,12 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * This activity will be called when the alarm is triggered.
- *
- * @author Michael Irwin
- */
-
 public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
     private ExpandableListView listView;
@@ -36,6 +31,8 @@ public class AlarmReceiverActivity extends Activity {
     private ArrayList<Event> mEvents = new ArrayList<Event>();
     private HashMap<String, List<String>> listHash;
 
+    private Vibrator vibrator;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +40,8 @@ public class AlarmReceiverActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.alarm);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
@@ -61,17 +60,20 @@ public class AlarmReceiverActivity extends Activity {
             listView.setAdapter(listAdapter);
         }
 
-
         Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
         stopAlarm.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 mMediaPlayer.stop();
+                vibrator.cancel();
                 finish();
                 return false;
             }
         });
 
         playSound(this, getAlarmUri());
+
+        long[] pattern = {0, 100, 1000, 300, 200, 100, 500, 200, 100};
+        vibrator.vibrate(pattern, 0);
     }
 
     private void initData() {
