@@ -1,5 +1,8 @@
 package com.example.daybook;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
@@ -22,6 +25,8 @@ import android.support.design.widget.Snackbar;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +38,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
     final MainActivity pointer = this;
+    private AlarmManager alarmManager;
 
     private JSONObject auth_token;
     private JSONArray events;
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             }
         });
 
+        alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
     }
 
     @Override
@@ -195,21 +203,21 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             AppCompatTextView alarmView = (AppCompatTextView ) view;
-                            if (alarmView.isActivated()) {
+                            Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
+
+                            if (alarm.set) {
                                 Toast.makeText(getApplicationContext(), "Alarm cleared.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(false);
-
-                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
                                 alarm.set = false;
+                                alarmManager.cancel(alarm.intent);
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Alarm set.", Toast.LENGTH_SHORT).show();
 
                                 alarmView.setActivated(true);
-
-                                Alarm alarm = (Alarm) alarmFr.getListView().getItemAtPosition(position);
                                 alarm.set = true;
+                                alarm.intent = Alarm(new LocalTime(alarm.time), alarm);
                             }
                         }
                     });
@@ -389,6 +397,43 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private PendingIntent Alarm(LocalTime time, Alarm alarm) {
+        ArrayList<Event> todayEvents = new ArrayList<Event>();
+
+        Iterator mEventsIterator = myEvents.iterator();
+        String todayDate = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
+
+        while (mEventsIterator.hasNext()) {
+            Event event = (Event) mEventsIterator.next();
+            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(todayDate)) {
+                todayEvents.add(event);
+            }
+        }
+
+        Intent intent = new Intent(this, AlarmReceiverActivity.class);
+        intent.putExtra(MainActivity.eventExtra, todayEvents);
+        intent.putExtra("alarm", alarm);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        DateTime date;
+        if (new LocalTime().isAfter(time)) {
+            date = new DateTime()
+                    .withDayOfMonth(new DateTime().getDayOfMonth() + 1)
+                    .withHourOfDay(time.getHourOfDay())
+                    .withMinuteOfHour(time.getMinuteOfHour());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
+        }
+        else {
+            date = new DateTime()
+                    .withHourOfDay(time.getHourOfDay())
+                    .withMinuteOfHour(time.getMinuteOfHour());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
+        }
+
+        return pendingIntent;
     }
 
     @Override
