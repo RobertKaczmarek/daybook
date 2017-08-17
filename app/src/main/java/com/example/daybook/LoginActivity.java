@@ -113,25 +113,22 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
+    public void onLogin() {
+        if (result != null) onLoginSuccess();
+        else onLoginFailed();
+    }
     public void onLoginSuccess() {
-        if (result.isEmpty()) {
-            Toast.makeText(getBaseContext(), "Invalid credentials.", Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
 
-            _loginButton.setEnabled(true);
-        }
-        else {
-            _loginButton.setEnabled(true);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("auth_token", result);
+        setResult(7, intent);
 
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("auth_token", result);
-            setResult(7, intent);
-
-            finish();
-        }
+        finish();
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Invalid credentials.", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
@@ -222,9 +219,7 @@ public class LoginActivity extends AppCompatActivity {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            // On complete call either onLoginSuccess or onLoginFailed
-                            onLoginSuccess();
-                            // onLoginFailed();
+                            onLogin();
                             mProgressDialog.dismiss();
                         }
                     }, 3000);
