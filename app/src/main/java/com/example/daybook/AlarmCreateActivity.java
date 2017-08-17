@@ -129,7 +129,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
             }
 
             Intent intent = new Intent();
-            intent.putExtra("object", time_from_api[1]);
+            intent.putExtra("object", object.toString());
 
             setResult(3, intent);
             finish();
