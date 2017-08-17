@@ -66,7 +66,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mTime;
-        private String resultAPI;
+        private JSONObject object;
 
         APICreateTask(String time) {
             mTime = time;
@@ -108,10 +108,12 @@ public class AlarmCreateActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                resultAPI = sb.toString();
+                object = new JSONObject(sb.toString());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -119,7 +121,12 @@ public class AlarmCreateActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
-            String[] time_from_api = resultAPI.split(" ");
+            try {
+                String time = object.getString("time").split(" ")[1];
+                object.put("time", time);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             Intent intent = new Intent();
             intent.putExtra("object", time_from_api[1]);
