@@ -2,12 +2,17 @@ package com.example.daybook;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import org.joda.time.DateTime;
+
+import java.util.Comparator;
 
 /**
  * Created by Robert Kaczmarek on 26-Jul-17.
  */
 
-public class Event implements Parcelable {
+public class Event implements Parcelable, Comparable<Event> {
     public Integer id;
     public String title;
     public String description;
@@ -59,5 +64,16 @@ public class Event implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(date);
+    }
+
+    public static final Comparator<Event> DESCENDING_COMPARATOR = new Comparator<Event>() {
+        public int compare(Event l, Event r) {
+            return new DateTime(l.date).compareTo(new DateTime(r.date));
+        }
+    };
+
+    @Override
+    public int compareTo(@NonNull Event event) {
+        return new DateTime(this.date).compareTo(new DateTime(event.date));
     }
 }

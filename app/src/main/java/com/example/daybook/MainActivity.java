@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 
@@ -248,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     String event_date = event.getString("date");
 
                     myEvents.add(new Event(event_id, event_title, event_desc, event_date));
+                    Collections.sort(myEvents,Event.DESCENDING_COMPARATOR);
 
                     EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
                     ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
@@ -284,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     String alarm_time = alarm.getString("time");
 
                     myAlarms.add(new Alarm(alarm_id, alarm_time));
+                    Collections.sort(myAlarms,Alarm.DESCENDING_COMPARATOR);
 
                     AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
                     ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
