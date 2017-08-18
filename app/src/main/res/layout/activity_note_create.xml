@@ -11,6 +11,7 @@
         android:layout_width="560dp"
         android:layout_height="wrap_content"
         android:text="@string/createNoteTitle"
+        android:paddingLeft="15dp"
         android:textSize="10pt"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"></TextView>
@@ -34,6 +35,8 @@
         android:layout_height="wrap_content"
         android:text="@string/createNote"
         android:onClick="createNote"
+        android:background="@color/jet"
+        android:textColor="@color/white"
         android:layout_width="fill_parent"
         android:layout_marginTop="82dp"
         android:layout_below="@+id/noteDescription"
