@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Integer alarm_id = alarm.getInt("id");
                 String alarm_time = alarm.getString("time");
 
-                myAlarms.add(new Alarm(alarm_id, alarm_time));
+                myAlarms.add(new Alarm(alarm_id, alarm_time.split("[T.]+")[1].substring(0, 5)));
 
                 AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
                 ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
