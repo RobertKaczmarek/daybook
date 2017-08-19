@@ -124,7 +124,7 @@ public class EventCreateActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/events";
+            String url = "https://daybook-backend.herokuapp.com/events";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);

@@ -91,7 +91,7 @@ public class NoteEditActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/notes/" + mId;
+            String url = "https://daybook-backend.herokuapp.com/notes/" + mId;
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
