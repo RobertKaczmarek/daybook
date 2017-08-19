@@ -180,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/auth/login";
+            String url = "https://daybook-backend.herokuapp.com/auth/login";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);

@@ -83,7 +83,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/alarms";
+            String url = "https://daybook-backend.herokuapp.com/alarms";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);

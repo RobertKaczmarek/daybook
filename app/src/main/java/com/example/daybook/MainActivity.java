@@ -522,8 +522,10 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            android.os.Debug.waitForDebugger();
+
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint;
+            String url = "https://daybook-backend.herokuapp.com/" + mEndpoint;
             String result = null;
             int resCode;
             InputStream input;
@@ -586,17 +588,17 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             switch (object.getClass().getSimpleName()) {
                 case "Event": {
                     mEvent = (Event) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mEvent.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mEvent.id;
                     break;
                 }
                 case "Note": {
                     mNote = (Note) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mNote.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mNote.id;
                     break;
                 }
                 case "Alarm": {
                     mAlarm = (Alarm) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
                     break;
                 }
             }
