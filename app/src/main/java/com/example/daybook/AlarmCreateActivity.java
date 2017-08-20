@@ -58,7 +58,13 @@ public class AlarmCreateActivity extends AppCompatActivity {
     }
 
     public static void setTime(Integer hours, Integer minutes) {
-        time = hours + ":" + minutes;
+        String hour = hours.toString();
+        String minute = minutes.toString();
+
+        if( hours < 10 ) hour = "0" + hours;
+        if( minutes < 10 ) minute = "0" + minutes;
+
+        time = hour + ":" + minute;
 
         timeView.setText(time);
     }

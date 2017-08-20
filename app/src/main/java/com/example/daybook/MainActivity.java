@@ -522,8 +522,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            android.os.Debug.waitForDebugger();
-
             HttpURLConnection httpcon;
             String url = "https://daybook-backend.herokuapp.com/" + mEndpoint;
             String result = null;
