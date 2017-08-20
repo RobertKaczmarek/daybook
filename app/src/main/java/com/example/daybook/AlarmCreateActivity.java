@@ -121,6 +121,13 @@ public class AlarmCreateActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
+            try {
+                String time = object.getString("time").split("[T.]+")[1].substring(0, 5);
+                object.put("time", time);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent();
             intent.putExtra("object", object.toString());
 
