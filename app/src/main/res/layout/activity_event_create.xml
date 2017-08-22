@@ -1,64 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.daybook.EventCreateActivity">
 
 
     <TextView
-        android:id="@+id/createEventTitle"
-        android:layout_width="560dp"
+        android:id="@+id/eventCreateTitleView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/createEventTitle"
-        android:paddingLeft="15dp"
-        android:textSize="10pt">
+        android:textSize="14pt"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:textColor="@color/jet">
     </TextView>
 
     <EditText
-        android:id="@+id/eventTitle"
+        android:id="@+id/eventCreateTitle"
         android:layout_height="wrap_content"
         android:hint="@string/eventTitle"
         android:layout_width="fill_parent"
-        android:layout_above="@+id/eventDescription"
-        android:layout_marginBottom="17dp">
+        android:layout_marginTop="11dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:lines="1">
     </EditText>
 
     <EditText
-        android:id="@+id/eventDescription"
+        android:id="@+id/eventCreateDescription"
         android:layout_height="210dp"
         android:hint="@string/eventDescription"
         android:inputType="textMultiLine"
         android:lines="10"
         android:gravity="top"
-        android:paddingLeft="7dp"
-        android:layout_width="fill_parent"
-        android:layout_below="@+id/createEventTitle"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="12dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_width="fill_parent">
     </EditText>
 
-    <Button
-        android:id="@+id/createEvent"
-        android:layout_height="wrap_content"
-        android:text="@string/createEvent"
-        android:onClick="createEvent"
-        android:layout_width="fill_parent"
-        android:background="@color/jet"
-        android:textColor="@color/white"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="61dp">
-    </Button>
-
     <TextView
-        android:id="@+id/eventDateView"
+        android:id="@+id/eventDateCreateView"
         android:layout_width="217dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/createEvent"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="65dp"
         android:onClick="showDatePickerDialog"
-        android:text="@string/dateText" />
-</RelativeLayout>
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:paddingStart="50dp"
+        android:paddingEnd="10dp"
+        android:text="Event's date"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+    <Button
+        android:id="@+id/saveCreateEvent"
+        android:layout_height="wrap_content"
+        android:text="@string/createEvent"
+        android:background="@color/jet"
+        android:textColor="@color/white"
+        android:onClick="createEvent"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="60dp">
+    </Button>
+</LinearLayout>

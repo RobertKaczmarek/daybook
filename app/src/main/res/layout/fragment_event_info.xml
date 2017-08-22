@@ -40,7 +40,7 @@
         android:layout_alignRight="@id/eventTitleTextView"
         android:layout_alignEnd="@id/eventTitleTextView"
         android:text="@string/dateText"
-        android:textSize="15dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         />
 
     <TextView
