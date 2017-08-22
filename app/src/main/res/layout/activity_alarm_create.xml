@@ -16,26 +16,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"></TextView>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pick_time"
-        android:onClick="showTimePickerDialog"
-        android:layout_below="@+id/createAlarmTitle"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="62dp"
-        android:id="@+id/setAlarmTime" />
-
     <TextView
         android:id="@+id/alarmTimeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:onClick="showTimePickerDialog"
         android:text="@string/timeText"
-        android:layout_alignBaseline="@+id/setAlarmTime"
-        android:layout_alignBottom="@+id/setAlarmTime"
-        android:layout_toEndOf="@+id/setAlarmTime" />
+        android:layout_marginBottom="90dp"
+        android:layout_above="@+id/createAlarm"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/createAlarm"
@@ -45,10 +34,8 @@
         android:textColor="@color/white"
         android:onClick="createAlarm"
         android:layout_width="fill_parent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="193dp">
     </Button>
-
-
-
 </RelativeLayout>

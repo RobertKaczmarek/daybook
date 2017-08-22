@@ -181,7 +181,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/signup";
+            String url = "https://daybook-backend.herokuapp.com/signup";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);

@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 
@@ -248,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     String event_date = event.getString("date");
 
                     myEvents.add(new Event(event_id, event_title, event_desc, event_date));
+                    Collections.sort(myEvents,Event.DESCENDING_COMPARATOR);
 
                     EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
                     ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
@@ -284,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     String alarm_time = alarm.getString("time");
 
                     myAlarms.add(new Alarm(alarm_id, alarm_time));
+                    Collections.sort(myAlarms,Alarm.DESCENDING_COMPARATOR);
 
                     AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
                     ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
@@ -386,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Integer alarm_id = alarm.getInt("id");
                 String alarm_time = alarm.getString("time");
 
-                myAlarms.add(new Alarm(alarm_id, alarm_time));
+                myAlarms.add(new Alarm(alarm_id, alarm_time.split("[T.]+")[1].substring(0, 5)));
 
                 AlarmListFragment alarmFr = (AlarmListFragment) getSupportFragmentManager().findFragmentById(R.id.alarmFragment);
                 ArrayAdapter<Alarm> alarmAdapter = (ArrayAdapter<Alarm>) alarmFr.getListAdapter();
@@ -520,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         @Override
         protected Boolean doInBackground(Void... params) {
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint;
+            String url = "https://daybook-backend.herokuapp.com/" + mEndpoint;
             String result = null;
             int resCode;
             InputStream input;
@@ -583,17 +586,17 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             switch (object.getClass().getSimpleName()) {
                 case "Event": {
                     mEvent = (Event) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mEvent.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mEvent.id;
                     break;
                 }
                 case "Note": {
                     mNote = (Note) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mNote.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mNote.id;
                     break;
                 }
                 case "Alarm": {
                     mAlarm = (Alarm) object;
-                    url = "https://mysterious-dusk-55204.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
+                    url = "https://daybook-backend.herokuapp.com/" + mEndpoint + "/" + mAlarm.id;
                     break;
                 }
             }

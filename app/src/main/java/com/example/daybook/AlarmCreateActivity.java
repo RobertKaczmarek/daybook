@@ -58,7 +58,13 @@ public class AlarmCreateActivity extends AppCompatActivity {
     }
 
     public static void setTime(Integer hours, Integer minutes) {
-        time = hours + ":" + minutes;
+        String hour = hours.toString();
+        String minute = minutes.toString();
+
+        if( hours < 10 ) hour = "0" + hours;
+        if( minutes < 10 ) minute = "0" + minutes;
+
+        time = hour + ":" + minute;
 
         timeView.setText(time);
     }
@@ -83,7 +89,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/alarms";
+            String url = "https://daybook-backend.herokuapp.com/alarms";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
@@ -121,6 +127,13 @@ public class AlarmCreateActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Boolean result) {
+            try {
+                String time = object.getString("time").split("[T.]+")[1].substring(0, 5);
+                object.put("time", time);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent();
             intent.putExtra("object", object.toString());
 

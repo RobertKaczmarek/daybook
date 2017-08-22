@@ -78,21 +78,11 @@ public class EventCreateActivity extends AppCompatActivity {
         final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
         String title = eventTitle.getText().toString();
 
-        final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
-        String description = eventDesc.getText().toString();
-
         if (title.isEmpty()) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
         } else {
             eventTitle.setError(null);
-        }
-
-        if (description.isEmpty()) {
-            eventDesc.setError("description cannot be blank!");
-            valid = false;
-        } else {
-            eventDesc.setError(null);
         }
 
         return valid;
@@ -124,7 +114,7 @@ public class EventCreateActivity extends AppCompatActivity {
             }
 
             HttpURLConnection httpcon;
-            String url = "https://mysterious-dusk-55204.herokuapp.com/events";
+            String url = "https://daybook-backend.herokuapp.com/events";
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
