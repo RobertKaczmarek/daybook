@@ -147,12 +147,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout_button) {
-            myAlarms.clear();
-            alarms = null;
-            myEvents.clear();
-            events = null;
-            myNotes.clear();
-            notes = null;
+            clearApp();
 
             mLogoutTask = new UserLogoutTask();
             mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -162,6 +157,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearApp() {
+        myAlarms.clear();
+        alarms = null;
+        myEvents.clear();
+        events = null;
+        myNotes.clear();
+        notes = null;
     }
 
 
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     }
 
     private void initialize() {
+        clearApp();
         setDate();
 
         mSyncTask = new APISyncTask("events");
