@@ -46,6 +46,7 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
     final MainActivity pointer = this;
 
+    public static final String AUTH_TOKEN = "com.example.daybook.tokenFile";
     public static final String TOKEN = "token";
 
     private AlarmManager alarmManager;
