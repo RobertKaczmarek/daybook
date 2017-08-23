@@ -3,7 +3,9 @@ package com.example.daybook;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -32,10 +35,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +52,14 @@ import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
     final MainActivity pointer = this;
+
+    public static final String ALARMS_FILE = "com.example.daybook.AlarmsFile";
+    public static final String NUM_ALARMS = "NumOfAlarms";
+    public static final String ID = "id_";
+    public static final String TIME = "time_";
+    public static final String INTENT = "intent_";
+    public static final String SET = "set_";
+
     private AlarmManager alarmManager;
 
     private JSONObject auth_token;
@@ -510,6 +526,73 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         NoteListFragment noteFr = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.noteFragment);
         ArrayAdapter<Note> noteAdapter = (ArrayAdapter<Note>) noteFr.getListAdapter();
         noteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        SharedPreferences alarms = getSharedPreferences(ALARMS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = alarms.edit();
+        editor.clear();
+
+        editor.putInt(NUM_ALARMS, myAlarms.size());
+
+        for (Integer i = 0; i < myAlarms.size(); i++) {
+            editor.putInt(ID + i.toString(), myAlarms.get(i).id);
+            editor.putString(TIME + i.toString(), myAlarms.get(i).time);
+            editor.putString(INTENT + i.toString(), myAlarms.get(i).intent.toString());
+            editor.putBoolean(SET + i.toString(), myAlarms.get(i).set);
+        }
+
+        editor.commit();
+
+        String filename = "myAlarms.txt";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputStream.getFD()));
+            String delim = ";";
+
+            for (Integer i = 0; i < myAlarms.size(); i++) {
+                Alarm temp = myAlarms.get(i);
+                String line = temp.id + delim + temp.time + delim + temp.intent + delim + temp.set;
+                writer.write(line);
+                writer.newLine();
+            }
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void restoreAlarms() {
+        SharedPreferences alarms = getSharedPreferences(ALARMS_FILE, MODE_PRIVATE);
+
+        int numOfAlarms = alarms.getInt("NumOfAlarms", 0);
+        if (numOfAlarms != 0) {
+            myAlarms.clear();
+
+            for (Integer i = 0; i < numOfAlarms; i++) {
+                try {
+                    Integer id = alarms.getInt(ID + i.toString(), 0);
+                    String time = alarms.getString(TIME + i.toString(), "0");
+                    PendingIntent intent =  Intent.parseUri(alarms.getString(INTENT + i.toString(), "0"), 0);
+                    String time = alarms.getString(TIME + i.toString(), "0");
+                    String pic_path = tasks.getString(PIC + i.toString(), "");
+                    Task temp = new Task(title, desc, pic_path);
+
+                    // add the task to the list
+                    myTasks.add(temp);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        restoreTasksFromFile();
     }
 
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
