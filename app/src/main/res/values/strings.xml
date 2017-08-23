@@ -2,7 +2,7 @@
     <string name="app_name">Daybook</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="logout_button">Logout</string>
     <string name="current_data">current data</string>
     <string name="events">Events</string>
     <string name="notes">Notes</string>
