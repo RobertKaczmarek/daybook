@@ -38,13 +38,23 @@ public class Note implements Parcelable {
     };
 
     public String toString() {
-        if (description.length() > 35) {
-            String temp = description.substring(0, 35) + "...";
-            return temp;
+        String desc;
+        if (description.length() < 35) {
+            desc = description;
+            if (desc.contains("\n")) {
+                Integer position = desc.indexOf("\n");
+                desc = desc.substring(0, position);
+            }
         }
         else {
-            return description;
+            if (description.contains("\n")) {
+                Integer position = description.indexOf("\n");
+                if (position > 35) desc = description.substring(0, 35) + "...";
+                else desc = description.substring(0, position);
+            }
+            else desc = description.substring(0, 35) + "...";
         }
+        return desc;
     }
 
     @Override

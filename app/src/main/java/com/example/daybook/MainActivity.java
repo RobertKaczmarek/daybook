@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         if (day.indexOf("0") == 0) day = day.substring(1, 2);
         String month = new SimpleDateFormat("MMMM").format(Calendar.getInstance().getTime());
 
-        String content = "Hello! Today is " + dayName + ", the " + day + ". day of " + month + "!";
+        String content = "Hello! Today is " + dayName + ",\nthe " + day + ". day of " + month + "!";
 
         currentDataTxV.setText(content);
     }

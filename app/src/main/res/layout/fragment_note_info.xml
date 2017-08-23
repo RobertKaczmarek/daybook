@@ -7,14 +7,27 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Note"
+        android:gravity="center_horizontal"
+        android:textSize="22dp"
+        android:layout_marginTop="30dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+
+    <TextView
         android:id="@+id/noteDescTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/textViewTitle"
         android:gravity="center_horizontal"
-        android:text="@string/descText" />
+        android:text="@string/descText"
+        android:textSize="17dp"/>
 
     <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/noteEditButton"
@@ -26,4 +39,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="8dp"/>
+
+
 </RelativeLayout>

@@ -3,15 +3,14 @@ package com.example.daybook;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,15 +44,15 @@ public class EventCreateActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        dateView = (TextView) findViewById(R.id.eventDateView);
+        dateView = (TextView) findViewById(R.id.eventDateCreateView);
     }
 
     public void createEvent(View view) {
         if (validate()) {
-            final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
+            final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
             title =  eventTitle.getText().toString();
 
-            final EditText eventDesc = (EditText) findViewById(R.id.eventDescription);
+            final EditText eventDesc = (EditText) findViewById(R.id.eventCreateDescription);
             description = eventDesc.getText().toString();
 
             mCreateEventTask = new APICreateTask(title, description, date);
@@ -75,10 +74,10 @@ public class EventCreateActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        final EditText eventTitle = (EditText) findViewById(R.id.eventTitle);
+        final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
         String title = eventTitle.getText().toString();
 
-        if (title.isEmpty()) {
+        if (title.isEmpty() || title.startsWith("\n") || title.startsWith(" ") || title.length() >= 30) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
         } else {
