@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     private JSONArray alarms;
     private APISyncTask mSyncTask = null;
     private APIDeleteTask mDeleteTask = null;
+    private UserLogoutTask mLogoutTask = null;
 
     private int listItemPosition = -1;
     private String listIdentifier;
@@ -130,8 +131,19 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.logout_button) {
+            myAlarms.clear();
+            alarms = null;
+            myEvents.clear();
+            events = null;
+            myNotes.clear();
+            notes = null;
+
+            mLogoutTask = new UserLogoutTask();
+            mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
+
+            Intent intent = new Intent(pointer, LoginActivity.class);
+            startActivityForResult(intent, 1);
         }
 
         return super.onOptionsItemSelected(item);
@@ -503,6 +515,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     public void onResume() {
         super.onResume();
 
+
+
         EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
         ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
         eventAdapter.notifyDataSetChanged();
@@ -636,6 +650,53 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             }
 
             return true;
+        }
+    }
+
+    public class UserLogoutTask extends AsyncTask<Void, Void, Boolean> {
+
+        UserLogoutTask() {
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            HttpURLConnection httpcon;
+            String url = "https://daybook-backend.herokuapp.com/auth/logout";
+            String result = null;
+            int resCode;
+            InputStream input;
+            try {
+                httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
+                httpcon.setRequestProperty("Content-Type", "application/json");
+                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestMethod("GET");
+                httpcon.connect();
+                resCode = httpcon.getResponseCode();
+
+                if (resCode == HttpURLConnection.HTTP_OK) {
+                    input = httpcon.getInputStream();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(input, "iso-8859-1"), 8);
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    input.close();
+                    result = sb.toString();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return true;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            auth_token = null;
         }
     }
 }
