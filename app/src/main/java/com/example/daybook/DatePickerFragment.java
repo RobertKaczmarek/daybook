@@ -3,7 +3,6 @@ package com.example.daybook;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
@@ -25,12 +24,12 @@ public class DatePickerFragment extends DialogFragment
         int day = calendar.getDayOfMonth();
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        return new DatePickerDialog(getActivity(), this, year, month - 1, day);
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
-        if (this.getActivity().getClass() == EventCreateActivity.class) EventCreateActivity.setDate(day, month, year);
-        if (this.getActivity().getClass() == EventEditActivity.class) EventEditActivity.setDate(day, month, year);
+        if (this.getActivity().getClass() == EventCreateActivity.class) EventCreateActivity.setDate(day, month + 1, year);
+        if (this.getActivity().getClass() == EventEditActivity.class) EventEditActivity.setDate(day, month + 1, year);
     }
 }
