@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         if (id == R.id.logout_button) {
             clearApp();
 
+
             mLogoutTask = new UserLogoutTask();
             mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
 
