@@ -2,7 +2,6 @@ package com.example.daybook;
 
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,18 +22,15 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
-import java.util.Date;
 
+// activity odpowiedzialne za edycję wydarzeń
 public class EventEditActivity extends AppCompatActivity {
-    private static Event event;
-
-    private JSONObject auth_token;
+    private static Event event; // wybrane wydarzenie
+    private JSONObject auth_token; // token autoryzacji
 
     private static TextView dateView;
 
-    private APIUpdateTask mUpdateEventTask = null;
-
+    private APIUpdateTask mUpdateEventTask = null;  // callback do serwera który zaktualizuje wydarzenie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +39,8 @@ public class EventEditActivity extends AppCompatActivity {
 
         try {
             Intent received_intent = getIntent();
+
+            // odbieramy auth_token i wybrane wydarzenie z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
             event = received_intent.getParcelableExtra(MainActivity.eventExtra);
         } catch (JSONException e) {
@@ -55,11 +53,14 @@ public class EventEditActivity extends AppCompatActivity {
         EditText descriptionView = (EditText) findViewById(R.id.eventEditDescription);
         descriptionView.setText(event.description);
 
+        //
         dateView = (TextView) findViewById(R.id.eventDateEditView);
         dateView.setText(new DateTime(event.date).toString("dd-MM-yyyy"));
     }
 
+    // funkcja aktualizująca wydarzenie danymi wprowadzonymi przez użytkownika
     public void updateEvent(View view) {
+        // walidacja pól dostępnych w activity
         if (validate()) {
             final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
             event.title =  eventTitle.getText().toString();
@@ -72,24 +73,27 @@ public class EventEditActivity extends AppCompatActivity {
         }
     }
 
+    // DatePicker do wybrania daty
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
+    // funkcja aktualizująca datę w modelu
     public static void setDate(Integer day, Integer month, Integer year) {
         event.date = day + "-" + month + "-" + year;
 
         dateView.setText(event.date);
     }
 
+    // funkcja walidująca pola
     public boolean validate() {
         boolean valid = true;
 
         final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
         String title = eventTitle.getText().toString();
 
-        if (title.isEmpty() || title.startsWith("\n") || title.startsWith(" ") || title.length() >= 30) {
+        if (title.isEmpty()) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
         }
@@ -107,6 +111,7 @@ public class EventEditActivity extends AppCompatActivity {
     }
 
 
+    // PUT request do serwera aktualizujący na nim dane
     public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final Integer mId;
@@ -140,7 +145,6 @@ public class EventEditActivity extends AppCompatActivity {
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
                 httpcon.setRequestMethod("PUT");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -169,6 +173,9 @@ public class EventEditActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
+        // przekazanie obiektu a nie ponowne pobranie go pozwala zwiększyć wydajność aplikacji
+        // tym samym minimalizujemy niepotrzebne odniesienia do serwera
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
             intent.putExtra(MainActivity.eventExtra, event);

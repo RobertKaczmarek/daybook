@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,11 +23,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// activity odpowiedzialne za tworzenie nowych wydarzeń
 public class EventCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateEventTask = null;
-    private JSONObject auth_token;
+    private APICreateTask mCreateEventTask = null; // callback do serwera w celu utworzenia nowego wydareznia
+    private JSONObject auth_token; // token autoryzacji
 
-    private static TextView dateView;
+    private static TextView dateView; // TextView do wybierania i wyświetlania daty
 
     private static String title;
     private static String description;
@@ -42,6 +41,8 @@ public class EventCreateActivity extends AppCompatActivity {
 
         try {
             Intent received_intent = getIntent();
+
+            // przechwytujemy auth_token z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -50,7 +51,9 @@ public class EventCreateActivity extends AppCompatActivity {
         dateView = (TextView) findViewById(R.id.eventDateCreateView);
     }
 
+    // funkcja odpowiedzialna za tworzenie nowego wydarzenia
     public void createEvent(View view) {
+        // walidacja czy pola są odpowiednio wypełnione
         if (validate()) {
             final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
             title =  eventTitle.getText().toString();
@@ -58,30 +61,36 @@ public class EventCreateActivity extends AppCompatActivity {
             final EditText eventDesc = (EditText) findViewById(R.id.eventCreateDescription);
             description = eventDesc.getText().toString();
 
+            // zapobiega crashowaniu się aplikacji gdy data nie została wybrana
             if (date == null) date = new DateTime().toString("dd-MM-yyyy");
+
+            // asynchroniczne zadanie wykonujące request do serwera
             mCreateEventTask = new APICreateTask(title, description, date);
             mCreateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
         }
     }
 
+    // DatePicker pozwalający wybrać datę
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
+    // funkcja przypisujące datę do zmiennej
     public static void setDate(Integer day, Integer month, Integer year) {
         date = day + "-" + month + "-" + year;
 
         dateView.setText(date);
     }
 
+    // walidacja pól dostępnych w activity
     public boolean validate() {
         boolean valid = true;
 
         final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
         String title = eventTitle.getText().toString();
 
-        if (title.isEmpty() || title.startsWith("\n") || title.startsWith(" ") || title.length() >= 30) {
+        if (title.isEmpty()) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
         }
@@ -99,6 +108,7 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
+    // POST request do serwera tworzący wydarzenie
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mTitle;
@@ -131,7 +141,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
                 httpcon.setRequestMethod("POST");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -161,6 +170,7 @@ public class EventCreateActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po zawartości AsyncTask - przekazuje stworzony obiekt do MainActivity
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
             intent.putExtra("object", object.toString());

@@ -2,7 +2,6 @@ package com.example.daybook;
 
 
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,27 +10,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
-
 import static com.example.daybook.MainActivity.myEvents;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
+// fragment odpowiedzialny za wyświeltanie wybranego wydarzenia
 public class EventInfoFragment extends Fragment {
-    private Event mEvent;
-    private String auth_token;
-    private Integer position;
+    private Event mEvent; // wybrane wydarzenie
+    private String auth_token; // token autoryzacji
+    private Integer position; // pozycja na liście,
+    // potrzebna podczas gdy użytkownik będzie chciał zaktualizować wydarzenie z tego panelu
 
     public EventInfoFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_info, container, false);
 
         view.findViewById(R.id.eventEditButton).setOnClickListener(new View.OnClickListener() {
@@ -47,6 +40,7 @@ public class EventInfoFragment extends Fragment {
         return view;
     }
 
+    // funkcja wyświetlająca dane wydarzenia
     public void displayEvent(Event event) {
         ((TextView) getActivity().findViewById(R.id.eventTitleTextView)).setText(event.title);
         ((TextView) getActivity().findViewById(R.id.eventDescTextView)).setText(event.description);
@@ -55,12 +49,11 @@ public class EventInfoFragment extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        // perform actions when the parent Activity is created
         super.onActivityCreated(savedInstanceState);
 
         Intent intent = getActivity().getIntent();
 
-        // display the task details
+        // pobieramy wybrane wydarzenie, token oraz pozycje na liście
         mEvent = intent.getParcelableExtra(MainActivity.eventExtra);
         auth_token = intent.getStringExtra("auth_token");
         position = intent.getIntExtra("position", 0);
@@ -69,6 +62,8 @@ public class EventInfoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 9 - oznacza powrót z activity, które pozwala na aktualizacje wydarzenia
+        // trzeba wybrane wydarzenie zaktualizować na głównej liście i wyświetlnić je
         if (resultCode == 9) {
             try {
                 Event event = data.getParcelableExtra(MainActivity.eventExtra);

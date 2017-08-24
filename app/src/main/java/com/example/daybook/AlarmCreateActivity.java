@@ -52,6 +52,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
         // zapobiega crashowaniu się aplikacji przy nie wybranym czasie alarmu
         if (time == null) time = new LocalTime().toString("HH:mm");
 
+        // asynchroniczne zadanie wykonujące request do serwera
         mCreateAlarmTask = new APICreateTask(time);
         mCreateAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }

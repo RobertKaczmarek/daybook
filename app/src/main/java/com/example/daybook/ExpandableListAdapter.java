@@ -11,10 +11,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Robert Kaczmarek on 15-Aug-17.
- */
-
+// adapter do ListView które jest wykorzystywane podczas alarmu
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> listDataHeader;
