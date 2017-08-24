@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.joda.time.LocalTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,6 +49,8 @@ public class AlarmCreateActivity extends AppCompatActivity {
     }
 
     public void createAlarm(View view) {
+        if (time == null) time = new LocalTime().toString("HH:mm");
+
         mCreateAlarmTask = new APICreateTask(time);
         mCreateAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
