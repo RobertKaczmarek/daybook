@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.joda.time.LocalTime;
@@ -23,14 +22,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// activity do tworzenia nowych alarmów
 public class AlarmCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateAlarmTask = null;
-    private JSONObject auth_token;
+    private APICreateTask mCreateAlarmTask = null; // callback do serwera który utowrzy na nim alarm
+    private JSONObject auth_token; // token autoryzacji
 
-    private static TextView timeView;
-
-
-    private static String time;
+    private static TextView timeView; // TextView używane do ustawiania i wyświetlania godziny
+    private static String time; // czas
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,27 +37,32 @@ public class AlarmCreateActivity extends AppCompatActivity {
 
         try {
             Intent received_intent = getIntent();
+
+            // pobierany jest auth_token wysłany z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         timeView = (TextView) findViewById(R.id.alarmTimeView);
-
     }
 
+    // funkcja uruchamiająca asynchroniczny task, który jest odwołaniem się do serwera
     public void createAlarm(View view) {
+        // zapobiega crashowaniu się aplikacji przy nie wybranym czasie alarmu
         if (time == null) time = new LocalTime().toString("HH:mm");
 
         mCreateAlarmTask = new APICreateTask(time);
         mCreateAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
     }
 
+    // TimePicker wykorzystywany do wybierania czasu
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
     }
 
+    // funkcja ustawiająca TextView jak i zmienna Time na czas dostarczony z TimePickera
     public static void setTime(Integer hours, Integer minutes) {
         String hour = hours.toString();
         String minute = minutes.toString();
@@ -72,6 +75,9 @@ public class AlarmCreateActivity extends AppCompatActivity {
         timeView.setText(time);
     }
 
+
+    // POST request do serwera tworzący na nim alarm - potrzebny są zmienny Time i Days (jednak nie wykorzystujemy jej, stąd wysyłamy po prostu 0)
+    //
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mTime;
@@ -99,7 +105,6 @@ public class AlarmCreateActivity extends AppCompatActivity {
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
                 httpcon.setRequestMethod("POST");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -129,6 +134,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po zawartości AsyncTask - ustawia odpowiedni format czasu i przekazuje go w obiekcie do MainActivity
         protected void onPostExecute(Boolean result) {
             try {
                 String time = object.getString("time").split("[T.]+")[1].substring(0, 5);

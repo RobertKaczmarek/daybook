@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// activity pokazujące się podczas dzwonienia alarmu
 public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
-    private ExpandableListView listView;
-    private ExpandableListAdapter listAdapter;
-    private List<String> mListEvents;
-    private ArrayList<Event> mEvents = new ArrayList<Event>();
-    private HashMap<String, List<String>> listHash;
-
+    private ExpandableListView listView; // ListView dla wydarzeń
+    private ExpandableListAdapter listAdapter; // adapter do ListView
+    private List<String> mListEvents; // lista wydarzeń na aktualny dzień
+    private ArrayList<Event> mEvents = new ArrayList<Event>(); // wydarzenia przekazane z MainActivity
+    private HashMap<String, List<String>> listHash; // lista dodatkowych opisów do wydarzeń
     private Vibrator vibrator;
 
     @Override
@@ -43,6 +43,7 @@ public class AlarmReceiverActivity extends Activity {
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+        // otrzymujemy wydarzenia na aktualny dzień
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
 
@@ -60,6 +61,7 @@ public class AlarmReceiverActivity extends Activity {
             listView.setAdapter(listAdapter);
         }
 
+        // przycisk do wyłączenia alarmu i zamknięcia activity
         Button stopAlarm = (Button) findViewById(R.id.stopAlarm);
         stopAlarm.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -76,6 +78,7 @@ public class AlarmReceiverActivity extends Activity {
         vibrator.vibrate(pattern, 0);
     }
 
+    // funkcja inicjujące dane - ustawia wydarzenia do listy, dodaje ich opisy
     private void initData() {
         mListEvents = new ArrayList<String>();
         listHash = new HashMap<>();
@@ -108,8 +111,8 @@ public class AlarmReceiverActivity extends Activity {
         }
     }
 
-    //Get an alarm sound. Try for an alarm. If none set, try notification,
-    //Otherwise, ringtone.
+    // funkcja pobierająca dźwięk alarmu - jak jest ustawiony to go bierze, jak nie do dźwięk notyfikacji,
+    // jak ten też nie ustawiony do dzwonek
     private Uri getAlarmUri() {
         Uri alert = RingtoneManager
                 .getDefaultUri(RingtoneManager.TYPE_ALARM);

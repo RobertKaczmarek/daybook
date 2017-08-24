@@ -9,18 +9,14 @@ import org.joda.time.LocalTime;
 
 import java.util.Comparator;
 
-/**
- * Created by Robert Kaczmarek on 31-Jul-17.
- */
-
+// model alarmu
 public class Alarm implements Parcelable, Comparable<Alarm> {
-    public Integer id;
-    public String time;
-    public PendingIntent intent;
-    boolean set;
+    public Integer id; // do odwołań się na serwerze
+    public String time; // czas
+    public PendingIntent intent; // intent alarmu
+    boolean set; // zmienna informująca czy alarm jest ustawiony
 
     Alarm() {
-
     }
 
     Alarm(Integer i, String t) {
@@ -58,7 +54,7 @@ public class Alarm implements Parcelable, Comparable<Alarm> {
     public void writeToParcel(Parcel parcel, int i) {
     }
 
-
+    // własny komparator wykorzystywany do sortowania elementów na liście
     public static final Comparator<Alarm> DESCENDING_COMPARATOR = new Comparator<Alarm>() {
         public int compare(Alarm l, Alarm r) {
             return new LocalTime(l.time).compareTo(new LocalTime(r.time));
