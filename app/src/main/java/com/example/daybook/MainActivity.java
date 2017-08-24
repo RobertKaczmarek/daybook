@@ -87,41 +87,44 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             startActivityForResult(intent, 1);
         }
 
-        FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
-        FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
-        FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
+        if (auth_token != null && auth_token.has("auth_token")) {
+            FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
+            FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
+            FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
 
-        fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+            fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
-        addEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createEvent = new Intent(pointer, EventCreateActivity.class);
-                createEvent.putExtra("auth_token", auth_token.toString());
-                startActivityForResult(createEvent, 1);
-            }
-        });
+            addEventButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent createEvent = new Intent(pointer, EventCreateActivity.class);
+                    createEvent.putExtra("auth_token", auth_token.toString());
+                    startActivityForResult(createEvent, 1);
+                }
+            });
 
-        addNoteButton.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createNote = new Intent(pointer, NoteCreateActivity.class);
-                createNote.putExtra("auth_token", auth_token.toString());
-                startActivityForResult(createNote, 1);
-            }
-        }));
+            addNoteButton.setOnClickListener((new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent createNote = new Intent(pointer, NoteCreateActivity.class);
+                    createNote.putExtra("auth_token", auth_token.toString());
+                    startActivityForResult(createNote, 1);
+                }
+            }));
 
-        addAlarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
-                createAlarm.putExtra("auth_token", auth_token.toString());
-                startActivityForResult(createAlarm, 1);
-            }
-        });
+            addAlarmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
+                    createAlarm.putExtra("auth_token", auth_token.toString());
+                    startActivityForResult(createAlarm, 1);
+                }
+            });
 
-        alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-        initialize();
+            alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            initialize();
+        }
+
     }
 
     @Override
