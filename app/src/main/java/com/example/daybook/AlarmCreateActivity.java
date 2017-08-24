@@ -77,7 +77,6 @@ public class AlarmCreateActivity extends AppCompatActivity {
 
 
     // POST request do serwera tworzący na nim alarm - potrzebny są zmienny Time i Days (jednak nie wykorzystujemy jej, stąd wysyłamy po prostu 0)
-    //
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mTime;

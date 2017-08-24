@@ -47,6 +47,7 @@ public class AlarmReceiverActivity extends Activity {
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
 
+        // jeżeli nie ma wydarzeń wyświetlamy stosowny komunikat, w innym wypadku inicjujemy wszystkie potrzebne rzeczy
         if (mEvents.isEmpty()) {
             TextView info = (TextView) findViewById(R.id.dayInfo);
             info.setText("You have no events scheduled for today! You can enjoy your day!");
