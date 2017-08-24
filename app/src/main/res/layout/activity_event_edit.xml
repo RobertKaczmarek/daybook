@@ -26,7 +26,9 @@
         android:layout_marginTop="11dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title">
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:inputType="text"
+        android:maxLines="1">
     </EditText>
 
 
