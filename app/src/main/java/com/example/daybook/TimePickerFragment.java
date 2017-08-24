@@ -7,29 +7,26 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.widget.TimePicker;
 
-import java.util.Calendar;
+import org.joda.time.LocalTime;
 
-/**
- * Created by Robert Kaczmarek on 05-Aug-17.
- */
-
+// dialog TimePicker do wybierania czasu
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current time as the default values for the picker
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
+        // aktualny czas ustawiony jako domyślny
+        final LocalTime c = new LocalTime();
+        int hour = c.getHourOfDay();
+        int minute = c.getMinuteOfHour();
 
-        // Create a new instance of TimePickerDialog and return it
+        // tworzy nową instancję dialogu i jązwraca
         return new TimePickerDialog(getActivity(), this, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Do something with the time chosen by the user
+        // wywołujemy odpowiednią funkcję żeby ustawić wybrany czas
         AlarmCreateActivity.setTime(hourOfDay, minute);
     }
 }
