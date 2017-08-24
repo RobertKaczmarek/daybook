@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,6 +58,7 @@ public class EventCreateActivity extends AppCompatActivity {
             final EditText eventDesc = (EditText) findViewById(R.id.eventCreateDescription);
             description = eventDesc.getText().toString();
 
+            if (date == null) date = new DateTime().toString("dd-MM-yyyy");
             mCreateEventTask = new APICreateTask(title, description, date);
             mCreateEventTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
         }
@@ -80,9 +84,16 @@ public class EventCreateActivity extends AppCompatActivity {
         if (title.isEmpty() || title.startsWith("\n") || title.startsWith(" ") || title.length() >= 30) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
-        } else {
-            eventTitle.setError(null);
         }
+        else if (title.length() >= 30) {
+            eventTitle.setError("title must be under 30 characters!");
+            valid = false;
+        }
+        else if (title.startsWith(" ")) {
+            eventTitle.setError("title cannot start with space!!");
+            valid = false;
+        }
+        else eventTitle.setError(null);
 
         return valid;
     }

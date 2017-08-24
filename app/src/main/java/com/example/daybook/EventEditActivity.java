@@ -86,25 +86,22 @@ public class EventEditActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
+        final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
         String title = eventTitle.getText().toString();
 
-        final EditText eventDesc = (EditText) findViewById(R.id.eventEditDescription);
-        String description = eventDesc.getText().toString();
-
-        if (title.isEmpty()) {
+        if (title.isEmpty() || title.startsWith("\n") || title.startsWith(" ") || title.length() >= 30) {
             eventTitle.setError("title cannot be blank!");
             valid = false;
-        } else {
-            eventTitle.setError(null);
         }
-
-        if (description.isEmpty()) {
-            eventDesc.setError("description cannot be blank!");
+        else if (title.length() >= 30) {
+            eventTitle.setError("title must be under 30 characters!");
             valid = false;
-        } else {
-            eventDesc.setError(null);
         }
+        else if (title.startsWith(" ")) {
+            eventTitle.setError("title cannot start with space!!");
+            valid = false;
+        }
+        else eventTitle.setError(null);
 
         return valid;
     }
