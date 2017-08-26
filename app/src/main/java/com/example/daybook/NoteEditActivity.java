@@ -24,7 +24,7 @@ import java.net.URL;
 public class NoteEditActivity extends AppCompatActivity {
     private static Note note;
 
-    private JSONObject auth_token;
+    private String auth_token;
 
     private APIUpdateTask mUpdateNoteTask = null; // callback do serwera, który zaktualizuje notatkę
 
@@ -33,15 +33,11 @@ public class NoteEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
-        try {
-            Intent received_intent = getIntent();
+        Intent received_intent = getIntent();
 
-            // odbieramy auth_token i wybraną notatkę z MainActivity
-            auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
-            note = received_intent.getParcelableExtra(MainActivity.noteExtra);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // odbieramy auth_token i wybraną notatkę z MainActivity
+        auth_token = received_intent.getStringExtra("auth_token");
+        note = received_intent.getParcelableExtra(MainActivity.noteExtra);
 
         EditText descriptionView = (EditText) findViewById(R.id.noteEditDescription);
         descriptionView.setText(note.description);
@@ -103,7 +99,7 @@ public class NoteEditActivity extends AppCompatActivity {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("PUT");
 
                 OutputStream os = httpcon.getOutputStream();
@@ -125,8 +121,6 @@ public class NoteEditActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 

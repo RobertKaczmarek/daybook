@@ -34,7 +34,7 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     private UserSignupTask mSignupTask = null; // callback do serwera tworzący użytkownika
-    private JSONObject result = null; // odpowiedź z serwera
+    private String auth_token = null; // odpowiedź z serwera
 
     @InjectView(R.id.input_name) EditText _nameText;
     @InjectView(R.id.input_email) EditText _emailText;
@@ -96,16 +96,12 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
 
-        try {
-            // przekazujemy auth_token do MainActivity
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("auth_token", result.getString("auth_token"));
+        // przekazujemy auth_token do MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("auth_token", auth_token);
 
-            setResult(RESULT_OK, intent);
-            finish();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     public void onSignupFailed() {
@@ -213,12 +209,10 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                result = new JSONObject(sb.toString());
+                auth_token = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 

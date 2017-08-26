@@ -26,7 +26,7 @@ import java.net.URL;
 // activity odpowiedzialne za edycję wydarzeń
 public class EventEditActivity extends AppCompatActivity {
     private static Event event; // wybrane wydarzenie
-    private JSONObject auth_token; // token autoryzacji
+    private String auth_token; // token autoryzacji
 
     private static TextView dateView;
 
@@ -37,15 +37,11 @@ public class EventEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_edit);
 
-        try {
-            Intent received_intent = getIntent();
+        Intent received_intent = getIntent();
 
-            // odbieramy auth_token i wybrane wydarzenie z MainActivity
-            auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
-            event = received_intent.getParcelableExtra(MainActivity.eventExtra);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // odbieramy auth_token i wybrane wydarzenie z MainActivity
+        auth_token = received_intent.getStringExtra("auth_token");
+        event = received_intent.getParcelableExtra(MainActivity.eventExtra);
 
         EditText titleView = (EditText) findViewById(R.id.eventEditTitle);
         titleView.setText(event.title);
@@ -53,7 +49,6 @@ public class EventEditActivity extends AppCompatActivity {
         EditText descriptionView = (EditText) findViewById(R.id.eventEditDescription);
         descriptionView.setText(event.description);
 
-        //
         dateView = (TextView) findViewById(R.id.eventDateEditView);
         dateView.setText(new DateTime(event.date).toString("dd-MM-yyyy"));
     }
@@ -143,7 +138,7 @@ public class EventEditActivity extends AppCompatActivity {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("PUT");
 
                 OutputStream os = httpcon.getOutputStream();
@@ -165,8 +160,6 @@ public class EventEditActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 

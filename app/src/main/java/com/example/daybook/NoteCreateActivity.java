@@ -23,7 +23,7 @@ import java.net.URL;
 // activity odpowiedzialne za tworzenie notatki
 public class NoteCreateActivity extends AppCompatActivity {
     private APICreateTask mCreateNoteTask = null; // callback do serwera w celu utworzenia nowego wydarzenia
-    private JSONObject auth_token; // token autoryzacji
+    private String auth_token; // token autoryzacji
 
     private static String description;
 
@@ -32,14 +32,10 @@ public class NoteCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_create);
 
-        try {
-            Intent received_intent = getIntent();
+        Intent received_intent = getIntent();
 
-            // przechwytujemy auth_token z MainActivity
-            auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // przechwytujemy auth_token z MainActivity
+        auth_token = received_intent.getStringExtra("auth_token");
     }
 
     // funkcja odpowiedzialna za tworzenie notatek na serwerze
@@ -76,7 +72,7 @@ public class NoteCreateActivity extends AppCompatActivity {
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mDescirption;
-        private JSONObject object;
+        private String object;
 
         APICreateTask(String desc) {
             mDescirption = desc;
@@ -97,7 +93,7 @@ public class NoteCreateActivity extends AppCompatActivity {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("POST");
 //                httpcon.connect();
 
@@ -117,12 +113,10 @@ public class NoteCreateActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                object = new JSONObject(sb.toString());
+                object = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -132,7 +126,7 @@ public class NoteCreateActivity extends AppCompatActivity {
         // funkcja wykonująca się po zawartości AsyncTask - przekazuje stworzony obiekt do MainActivity
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
-            intent.putExtra("object", object.toString());
+            intent.putExtra("object", object);
 
             setResult(2, intent);
             finish();

@@ -25,7 +25,7 @@ import java.net.URL;
 // activity do tworzenia nowych alarmów
 public class AlarmCreateActivity extends AppCompatActivity {
     private APICreateTask mCreateAlarmTask = null; // callback do serwera, który utworzy na nim alarm
-    private JSONObject auth_token; // token autoryzacji
+    private String auth_token; // token autoryzacji
 
     private static TextView timeView; // TextView używane do ustawiania i wyświetlania godziny
     private static String time; // czas
@@ -35,14 +35,10 @@ public class AlarmCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_create);
 
-        try {
-            Intent received_intent = getIntent();
+        Intent received_intent = getIntent();
 
-            // pobierany jest auth_token wysłany z MainActivity
-            auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // pobierany jest auth_token wysłany z MainActivity
+        auth_token = received_intent.getStringExtra("auth_token");
 
         timeView = (TextView) findViewById(R.id.alarmTimeView);
     }
@@ -103,7 +99,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("POST");
 
                 OutputStream os = httpcon.getOutputStream();

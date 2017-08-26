@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     private AlarmManager alarmManager; // manager do alarmów
 
-    private JSONObject auth_token; // token autoryzacyjny
+    private String auth_token; // token autoryzacyjny
     private JSONArray events; // JSON przechowujący wszystkie wydarzenia
     private JSONArray notes; // JSON prezchowujący wszystkie notatki
     private JSONArray alarms; // JSON przechowujący wszystkie alarmy
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     public static final String TOKEN = "token";
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
+    public static final String alarmExtra = "Alarm";
 
     static public ArrayList<Event> myEvents;
     static public ArrayList<Note> myNotes;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         // jeżeli zmienna jest zainicjowana i posiada token, to zapełniamy aplikację danymi
-        if (auth_token != null && auth_token.has("auth_token")) initialize();
+        if (auth_token != null) initialize();
 
         // inicjujemy wszystkie potrzebne rzeczy
         FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             @Override
             public void onClick(View view) {
                 Intent createEvent = new Intent(pointer, EventCreateActivity.class);
-                createEvent.putExtra("auth_token", auth_token.toString());
+                createEvent.putExtra("auth_token", auth_token);
                 startActivityForResult(createEvent, 1);
             }
         });
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             @Override
             public void onClick(View view) {
                 Intent createNote = new Intent(pointer, NoteCreateActivity.class);
-                createNote.putExtra("auth_token", auth_token.toString());
+                createNote.putExtra("auth_token", auth_token);
                 startActivityForResult(createNote, 1);
             }
         }));
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             @Override
             public void onClick(View view) {
                 Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
-                createAlarm.putExtra("auth_token", auth_token.toString());
+                createAlarm.putExtra("auth_token", auth_token);
                 startActivityForResult(createAlarm, 1);
             }
         });
@@ -155,11 +156,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         switch (resultCode) {
             case 7 :
                 // kod 7 - oznacza powrót z Login activity
-                try {
-                    auth_token = new JSONObject(data.getStringExtra("auth_token"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                auth_token = data.getStringExtra("auth_token");
 
                 // zapełniamy całą aplikacje danymi użytkownika
                 initialize();
@@ -310,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
                     alarmView.setActivated(true);
                     alarm.set = true;
-                    alarm.intent = Alarm(new LocalTime(alarm.time));
+                    alarm.intent = Alarm(new LocalTime(alarm.time), alarm);
                 }
             }
         });
@@ -338,14 +335,14 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 Event tmp = (Event) parent.getItemAtPosition(position);
 
                 intent.putExtra(eventExtra, tmp);
-                intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("auth_token", auth_token);
                 intent.putExtra("position", position);
                 break;
             }
             case "note": {
                 intent = new Intent(this, NoteInfoActivity.class);
                 Note tmp = (Note) parent.getItemAtPosition(position);
-                intent.putExtra("auth_token", auth_token.toString());
+                intent.putExtra("auth_token", auth_token);
                 intent.putExtra("position", position);
 
                 intent.putExtra(noteExtra, tmp);
@@ -433,10 +430,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     }
 
     // funkcja ustawiająca alarm - przyjmuje czas oraz dany alarm
-    private PendingIntent Alarm(LocalTime time) {
+    private PendingIntent Alarm(LocalTime time, Alarm alarm) {
         // ustawiamy intent oraz pending intent
         Intent intent = new Intent(this, AlarmReceiverActivity.class);
         intent.putExtra(MainActivity.eventExtra, myEvents);
+        intent.putExtra(MainActivity.alarmExtra, alarm);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -556,11 +554,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             SharedPreferences.Editor editor = token.edit();
             editor.clear();
 
-            try {
-                editor.putString(TOKEN, auth_token.getString("auth_token"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            editor.putString(TOKEN, auth_token);
 
             editor.commit();
         }
@@ -572,14 +566,8 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         SharedPreferences token = getSharedPreferences(AUTH_TOKEN, MODE_PRIVATE);
 
         if (token.contains(TOKEN)) {
-            try {
-                auth_token = new JSONObject();
-
-                auth_token.put("auth_token", token.getString(TOKEN, "0"));
-                result = true;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            auth_token = token.getString(TOKEN, "0");
+            result = true;
         }
 
         return result;
@@ -604,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("GET");
                 httpcon.connect();
                 resCode = httpcon.getResponseCode();
@@ -686,7 +674,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("DELETE");
                 httpcon.connect();
                 resCode = httpcon.getResponseCode();
@@ -705,8 +693,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     result = sb.toString();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -730,7 +716,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             try {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("GET");
                 httpcon.connect();
                 resCode = httpcon.getResponseCode();
@@ -749,8 +735,6 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     result = sb.toString();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 

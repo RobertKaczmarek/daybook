@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter;
 
 public class EventListFragment extends ListFragment {
 
-
     public EventListFragment() {
     }
 

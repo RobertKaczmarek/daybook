@@ -26,7 +26,7 @@ import java.net.URL;
 // activity odpowiedzialne za tworzenie nowych wydarzeń
 public class EventCreateActivity extends AppCompatActivity {
     private APICreateTask mCreateEventTask = null; // callback do serwera w celu utworzenia nowego wydarzenia
-    private JSONObject auth_token; // token autoryzacji
+    private String auth_token; // token autoryzacji
 
     private static TextView dateView; // TextView do wybierania i wyświetlania daty
 
@@ -39,14 +39,10 @@ public class EventCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
 
-        try {
-            Intent received_intent = getIntent();
+        Intent received_intent = getIntent();
 
-            // przechwytujemy auth_token z MainActivity
-            auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // przechwytujemy auth_token z MainActivity
+        auth_token = received_intent.getStringExtra("auth_token");
 
         dateView = (TextView) findViewById(R.id.eventDateCreateView);
     }
@@ -114,7 +110,7 @@ public class EventCreateActivity extends AppCompatActivity {
         private final String mTitle;
         private final String mDescirption;
         private final String mDate;
-        private JSONObject object;
+        private String object;
 
         APICreateTask(String title, String desc, String date) {
             mTitle = title;
@@ -139,7 +135,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
+                httpcon.setRequestProperty("Authorization", auth_token);
                 httpcon.setRequestMethod("POST");
 
                 OutputStream os = httpcon.getOutputStream();
@@ -158,12 +154,10 @@ public class EventCreateActivity extends AppCompatActivity {
                 }
 
                 br.close();
-                object = new JSONObject(sb.toString());
+                object = sb.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -173,7 +167,7 @@ public class EventCreateActivity extends AppCompatActivity {
         // funkcja wykonująca się po zawartości AsyncTask - przekazuje stworzony obiekt do MainActivity
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
-            intent.putExtra("object", object.toString());
+            intent.putExtra("object", object);
 
             setResult(1, intent);
             finish();

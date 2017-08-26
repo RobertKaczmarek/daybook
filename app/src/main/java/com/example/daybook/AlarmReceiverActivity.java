@@ -35,6 +35,7 @@ public class AlarmReceiverActivity extends Activity {
     private List<String> mListEvents; // lista wydarzeń na aktualny dzień
     private ArrayList<Event> mEvents = new ArrayList<Event>(); // wydarzenia przekazane z MainActivity
     private HashMap<String, List<String>> listHash; // lista dodatkowych opisów do wydarzeń
+    private Alarm mAlarm;
     private Vibrator vibrator;
 
     @Override
@@ -86,6 +87,8 @@ public class AlarmReceiverActivity extends Activity {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 mMediaPlayer.stop();
                 vibrator.cancel();
+                mAlarm.set = false;
+
                 finish();
                 return false;
             }
