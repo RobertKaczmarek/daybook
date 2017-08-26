@@ -29,12 +29,13 @@ import java.net.URL;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+// activity odpowiedzialne za logowanie użytkownika
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    private UserLoginTask mAuthTask = null;
-    private String result = null;
+    private UserLoginTask mAuthTask = null; // callback do serwera tworzący użytkownika
+    private String result = null; // odpowiedź z serwera
 
     @InjectView(R.id.input_email) EditText _emailText;
     @InjectView(R.id.input_password) EditText _passwordText;
@@ -59,16 +60,17 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
     }
 
+    // funckcja odpowiedzialna za logowanie
     public void login() {
         Log.d(TAG, "Login");
 
+        // sprawdzamy czy pola zostały poprawnie wypełnione
         if (!validate()) {
             onLoginFailed();
             return;
@@ -76,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
+        // ProcessDialog informujący że coś się dzieje w aplikacji
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -85,11 +88,13 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
+        // zapytanie do serwera logujące użytkownika
         mAuthTask = new UserLoginTask(email, password, progressDialog);
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-
+    // funkcja wywoułąca się po wróceniu z Signup activity - przekazywany z niej auth_token
+    // jest przekazywany dalej do MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
@@ -107,16 +112,19 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // zapobiega wróceniu do MainActivty za pomocą przycisku back
     @Override
     public void onBackPressed() {
-        // disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
+    // funkcja wywołująca się po zakończeniu się połączenia z serwerem
     public void onLogin() {
         if (result != null) onLoginSuccess();
         else onLoginFailed();
     }
+
+    // poprawne logowanie - dane istnieją na serwerze
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
 
@@ -127,12 +135,14 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    // niepoprawne logowanie - użytkownika nie istnieje / błędne dane
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Invalid credentials.", Toast.LENGTH_LONG).show();
 
         _loginButton.setEnabled(true);
     }
 
+    // funkcja sprawdzająca poprawność wypełnenia pól
     public boolean validate() {
         boolean valid = true;
 
@@ -157,6 +167,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    // POST request do serwera logujący użytkownika - zwraca auth_token używany
+    // przy każdym innym requeście do autoryzacji użytkownika
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -187,7 +199,6 @@ public class LoginActivity extends AppCompatActivity {
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Accept", "application/json");
                 httpcon.setRequestMethod("POST");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
