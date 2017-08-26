@@ -18,9 +18,12 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 // activity pokazujące się podczas dzwonienia alarmu
@@ -28,6 +31,7 @@ public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
     private ExpandableListView listView; // ListView dla wydarzeń
     private ExpandableListAdapter listAdapter; // adapter do ListView
+    private ArrayList<Event> todayEvents = new ArrayList<Event>();
     private List<String> mListEvents; // lista wydarzeń na aktualny dzień
     private ArrayList<Event> mEvents = new ArrayList<Event>(); // wydarzenia przekazane z MainActivity
     private HashMap<String, List<String>> listHash; // lista dodatkowych opisów do wydarzeń
@@ -43,12 +47,26 @@ public class AlarmReceiverActivity extends Activity {
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        // otrzymujemy wydarzenia na aktualny dzień
+        // otrzymujemy wydarzenia
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
 
+        // iterator dla listy z wydarzeniamy
+        Iterator mEventsIterator = mEvents.iterator();
+
+        // aktualna data
+        String todayDate = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
+
+        // sprawdzamy które wydrzenie jest na aktualny dzień - dzień alarmu
+        while (mEventsIterator.hasNext()) {
+            Event event = (Event) mEventsIterator.next();
+            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(todayDate)) {
+                todayEvents.add(event);
+            }
+        }
+
         // jeżeli nie ma wydarzeń wyświetlamy stosowny komunikat, w innym wypadku inicjujemy wszystkie potrzebne rzeczy
-        if (mEvents.isEmpty()) {
+        if (todayEvents.isEmpty()) {
             TextView info = (TextView) findViewById(R.id.dayInfo);
             info.setText("You have no events scheduled for today! You can enjoy your day!");
         }
@@ -84,8 +102,8 @@ public class AlarmReceiverActivity extends Activity {
         mListEvents = new ArrayList<String>();
         listHash = new HashMap<>();
 
-        for (int i = 0; i < mEvents.size(); i++) {
-            Event event = mEvents.get(i);
+        for (int i = 0; i < todayEvents.size(); i++) {
+            Event event = todayEvents.get(i);
             mListEvents.add(event.title);
 
             ArrayList<String> eventList = new ArrayList<>();

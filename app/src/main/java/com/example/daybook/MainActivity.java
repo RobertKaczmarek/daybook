@@ -42,28 +42,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-
+// główne activity aplikacji - dashboard z listą wydarzeń, notatek i alarmów
 public class MainActivity extends AppCompatActivity implements DeleteDialog.NoticeDialogListener {
-    final MainActivity pointer = this;
+    final MainActivity pointer = this; // wskaźnik na to activity
 
-    public static final String AUTH_TOKEN = "com.example.daybook.tokenFile";
-    public static final String TOKEN = "token";
+    private AlarmManager alarmManager; // manager do alarmów
 
-    private AlarmManager alarmManager;
-
-    private JSONObject auth_token;
-    private JSONArray events;
-    private JSONArray notes;
-    private JSONArray alarms;
-    private APISyncTask mSyncTask = null;
-    private APIDeleteTask mDeleteTask = null;
-    private UserLogoutTask mLogoutTask = null;
+    private JSONObject auth_token; // token autoryzacyjny
+    private JSONArray events; // JSON przechowujący wszystkie wydarzenia
+    private JSONArray notes; // JSON prezchowujący wszystkie notatki
+    private JSONArray alarms; // JSON przechowujący wszystkie alarmy
+    private APISyncTask mSyncTask = null; // callback do serwera pobierający dane obiekty
+    private APIDeleteTask mDeleteTask = null; // callback do serwera usuwający dany obiekt
+    private UserLogoutTask mLogoutTask = null; // callback do serwera wylogowywujący użytkownika
 
     private int listItemPosition = -1;
     private String listIdentifier;
 
     public FloatingActionsMenu fab;
 
+    public static final String AUTH_TOKEN = "com.example.daybook.token"; // nazwaklucza do SharedPreferences gdzie przechowywane jest auth_token
+    public static final String TOKEN = "token";
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
 
@@ -82,69 +81,64 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // jeżeli token nie jest zapsany w SharedPreferences, to wywołujemy activity w celu zalogowania się
         if (!restoreToken()) {
             Intent intent = new Intent(pointer, LoginActivity.class);
             startActivityForResult(intent, 1);
         }
 
-        if (auth_token != null && auth_token.has("auth_token")) {
-            FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
-            FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
-            FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
+        // jeżeli zmienna jest zainicjowana i posiada token, to zapełniamy aplikację danymi
+        if (auth_token != null && auth_token.has("auth_token")) initialize();
 
-            fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+        // inicjujemy wszystkie potrzebne rzeczy
+        FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_event);
+        FloatingActionButton addNoteButton = (FloatingActionButton) findViewById(R.id.add_note);
+        FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.add_alarm);
 
-            addEventButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent createEvent = new Intent(pointer, EventCreateActivity.class);
-                    createEvent.putExtra("auth_token", auth_token.toString());
-                    startActivityForResult(createEvent, 1);
-                }
-            });
+        fab = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
-            addNoteButton.setOnClickListener((new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent createNote = new Intent(pointer, NoteCreateActivity.class);
-                    createNote.putExtra("auth_token", auth_token.toString());
-                    startActivityForResult(createNote, 1);
-                }
-            }));
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createEvent = new Intent(pointer, EventCreateActivity.class);
+                createEvent.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createEvent, 1);
+            }
+        });
 
-            addAlarmButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
-                    createAlarm.putExtra("auth_token", auth_token.toString());
-                    startActivityForResult(createAlarm, 1);
-                }
-            });
+        addNoteButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createNote = new Intent(pointer, NoteCreateActivity.class);
+                createNote.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createNote, 1);
+            }
+        }));
 
-            alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-            initialize();
-        }
+        addAlarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createAlarm = new Intent(pointer, AlarmCreateActivity.class);
+                createAlarm.putExtra("auth_token", auth_token.toString());
+                startActivityForResult(createAlarm, 1);
+            }
+        });
 
+        alarmManager = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.logout_button) {
             clearApp();
-
 
             mLogoutTask = new UserLogoutTask();
             mLogoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
@@ -156,29 +150,23 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearApp() {
-        myAlarms.clear();
-        alarms = null;
-        myEvents.clear();
-        events = null;
-        myNotes.clear();
-        notes = null;
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
             case 7 :
+                // kod 7 - oznacza powrót z Login activity
                 try {
                     auth_token = new JSONObject(data.getStringExtra("auth_token"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+                // zapełniamy całą aplikacje danymi użytkownika
                 initialize();
                 break;
             case 1 :
+                // kod 1 - oznacza powrót z EventCreate activity
+                // przechwytujemy stworzony obiekt i dodajemy go do listy
                 try {
                     JSONObject event = new JSONObject(data.getStringExtra("object"));
 
@@ -188,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                     String event_date = event.getString("date");
 
                     myEvents.add(new Event(event_id, event_title, event_desc, event_date));
+                    // po dodaniu sortujemy liste
                     Collections.sort(myEvents,Event.DESCENDING_COMPARATOR);
 
                     EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
@@ -200,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 }
                 break;
             case 2 :
+                // kod 2 - oznacza powrót z NoteCreate activity
                 try {
                     JSONObject note = new JSONObject(data.getStringExtra("object"));
 
@@ -218,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
                 }
                 break;
             case 3 :
+                // kod 3 - oznacza powrót z AlarmCreate activty
                 try {
                     JSONObject alarm = new JSONObject(data.getStringExtra("object"));
 
@@ -239,10 +230,16 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
+    // funkcja odpowiedzialna za inicjacje aplikacji danmi użytkownika
     private void initialize() {
+        // czyścimy aplikacje
         clearApp();
+
+        // ustawiamy datę
         setDate();
 
+        // pobieramy każdy tych obiektów
+        // ustawiamy onItemClick i onItemLongClick listenery do list
         mSyncTask = new APISyncTask("events");
         mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
         final EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
@@ -313,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
                     alarmView.setActivated(true);
                     alarm.set = true;
-                    alarm.intent = Alarm(new LocalTime(alarm.time), alarm);
+                    alarm.intent = Alarm(new LocalTime(alarm.time));
                 }
             }
         });
@@ -332,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     }
 
 
+    // uruchamia odpowiednie Info activity w zalezności jaki obiekt został naciśnięty
     private void startSecondActivity(AdapterView<?> parent, int position, String action) {
         Intent intent = null;
         switch (action) {
@@ -434,25 +432,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
-    private PendingIntent Alarm(LocalTime time, Alarm alarm) {
-        ArrayList<Event> todayEvents = new ArrayList<Event>();
-
-        Iterator mEventsIterator = myEvents.iterator();
-        String todayDate = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
-
-        while (mEventsIterator.hasNext()) {
-            Event event = (Event) mEventsIterator.next();
-            if (new DateTime(event.date).toString("dd-MM-yyyy").equals(todayDate)) {
-                todayEvents.add(event);
-            }
-        }
-
+    // funkcja ustawiająca alarm - przyjmuje czas oraz dany alarm
+    private PendingIntent Alarm(LocalTime time) {
+        // ustawiamy intent oraz pending intent
         Intent intent = new Intent(this, AlarmReceiverActivity.class);
-        intent.putExtra(MainActivity.eventExtra, todayEvents);
-        intent.putExtra("alarm", alarm);
+        intent.putExtra(MainActivity.eventExtra, myEvents);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        // w zależności która godizna została wybrany, tak ustawiany jest alarm
         DateTime date;
         if (new LocalTime().isAfter(time)) {
             date = new DateTime()
@@ -469,6 +457,16 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
 
         return pendingIntent;
+    }
+
+    // czyści aplikacje z danych użytkownika
+    private void clearApp() {
+        myAlarms.clear();
+        alarms = null;
+        myEvents.clear();
+        events = null;
+        myNotes.clear();
+        notes = null;
     }
 
     @Override
@@ -515,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         Snackbar.make(v, "Delete canceled!", Snackbar.LENGTH_LONG).show();
     }
 
+    // zamyka FAB przy kliknięciu gdziekolwiek na ekran
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -531,12 +530,13 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         return super.dispatchTouchEvent(event);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
 
-
-
+        // informujemy adaptery o zmianach który mogły wystąpić wynikające z dodania nowego obiektu
+        // w którymś z Create activity
         EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
         ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
         eventAdapter.notifyDataSetChanged();
@@ -550,6 +550,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     public void onPause() {
         super.onPause();
 
+        // zapisujemy auth_token w SharedPreferences przy zabiciu aplikacji / przejścia do tła
         if (auth_token != null) {
             SharedPreferences token = getSharedPreferences(AUTH_TOKEN, MODE_PRIVATE);
             SharedPreferences.Editor editor = token.edit();
@@ -565,6 +566,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
+    // funkcja odnawiająca auth_token z SharedPreferences
     private Boolean restoreToken() {
         Boolean result = false;
         SharedPreferences token = getSharedPreferences(AUTH_TOKEN, MODE_PRIVATE);
@@ -583,6 +585,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         return result;
     }
 
+    // GET request do serwera pobierający wszystkie obiekty z danej kategorii
     public class APISyncTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEndpoint;
@@ -643,6 +646,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
+    // DELETE request do serwera usuwający dany obiekt
     public class APIDeleteTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEndpoint;
@@ -710,6 +714,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
+    // GET request do serwera wylogowywujący user - niszczony jest auth_token po stronie serwera
     public class UserLogoutTask extends AsyncTask<Void, Void, Boolean> {
 
         UserLogoutTask() {
