@@ -29,11 +29,12 @@ import java.net.URL;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+// activity odpowiedzialne za rejestracje
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    private UserSignupTask mSignupTask = null;
-    private JSONObject result = null;
+    private UserSignupTask mSignupTask = null; // callback do serwera tworzący użytkownika
+    private JSONObject result = null; // odpowiedź z serwera
 
     @InjectView(R.id.input_name) EditText _nameText;
     @InjectView(R.id.input_email) EditText _emailText;
@@ -58,15 +59,16 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
                 finish();
             }
         });
     }
 
+    // funkcja rejestrująca
     public void signup() {
         Log.d(TAG, "Signup");
 
+        // walidacja poprawności wypełnienia pól
         if (!validate()) {
             onSignupFailed();
             return;
@@ -85,14 +87,17 @@ public class SignupActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
         String password_confirmation = _passwordConfirmationText.getText().toString();
 
+        // rozpoczęcie requestu do serwera
         mSignupTask = new SignupActivity.UserSignupTask(name, email, password, password_confirmation, progressDialog);
         mSignupTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    // przy udanej rejestracji
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
 
         try {
+            // przekazujemy auth_token do MainActivity
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("auth_token", result.getString("auth_token"));
 
@@ -104,11 +109,12 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Signup failed", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
 
+    // walidacja pól Signup activity
     public boolean validate() {
         boolean valid = true;
 
@@ -152,6 +158,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
+    // POST request do serwera tworzący nowego użytkownika
     public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mName;
@@ -187,7 +194,6 @@ public class SignupActivity extends AppCompatActivity {
                 httpcon.setDoOutput(true);
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestMethod("POST");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -219,14 +225,12 @@ public class SignupActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po AsyncTasku
         protected void onPostExecute(Boolean result) {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            // On complete call either onSignupSuccess or onSignupFailed
-                            // depending on success
                             onSignupSuccess();
-                            // onSignupFailed();
                             mProgressDialog.dismiss();
                         }
                     }, 3000);
