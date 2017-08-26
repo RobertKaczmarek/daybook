@@ -90,7 +90,7 @@ public class EventEditActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
+        final EditText eventTitle = (EditText) findViewById(R.id.eventEditTitle);
         String title = eventTitle.getText().toString();
 
         if (title.isEmpty()) {
