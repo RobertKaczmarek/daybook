@@ -156,7 +156,11 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         switch (resultCode) {
             case 7 :
                 // kod 7 - oznacza powrót z Login activity
-                auth_token = data.getStringExtra("auth_token");
+                try {
+                    auth_token = new JSONObject(data.getStringExtra("auth_token")).getString("auth_token");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 // zapełniamy całą aplikacje danymi użytkownika
                 initialize();
