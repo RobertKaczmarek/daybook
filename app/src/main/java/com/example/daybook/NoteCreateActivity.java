@@ -1,13 +1,11 @@
 package com.example.daybook;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +20,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// activity odpowiedzialne za tworzenie notatki
 public class NoteCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateNoteTask = null;
-    private JSONObject auth_token;
+    private APICreateTask mCreateNoteTask = null; // callback do serwera w celu utworzenia nowego wydareznia
+    private JSONObject auth_token; // token autoryzacji
 
     private static String description;
 
@@ -35,13 +34,17 @@ public class NoteCreateActivity extends AppCompatActivity {
 
         try {
             Intent received_intent = getIntent();
+
+            // przechwytujemy auth_token z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    // funkcja odpowiedzialna za tworzenie notatek na serwerze
     public void createNote(View view) {
+        // na podstawie wypełnionych pół podejmujemy decyzje o tworzeniu notatki
         if (validate()) {
             final EditText noteDesc = (EditText) findViewById(R.id.noteDescription);
             description = noteDesc.getText().toString();
@@ -51,6 +54,7 @@ public class NoteCreateActivity extends AppCompatActivity {
         }
     }
 
+    // metoda walidująca wypełnione pola
     public boolean validate() {
         boolean valid = true;
 
@@ -68,6 +72,7 @@ public class NoteCreateActivity extends AppCompatActivity {
     }
 
 
+    // POST request do serwera tworzący wydarzenie
     public class APICreateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mDescirption;
@@ -124,6 +129,7 @@ public class NoteCreateActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po zawartości AsyncTask - przekazuje stworzony obiekt do MainActivity
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
             intent.putExtra("object", object.toString());

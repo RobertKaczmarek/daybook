@@ -20,12 +20,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+// activity odpowiedzialne za edycje notatki
 public class NoteEditActivity extends AppCompatActivity {
     private static Note note;
 
     private JSONObject auth_token;
 
-    private APIUpdateTask mUpdateNoteTask = null;
+    private APIUpdateTask mUpdateNoteTask = null; // callback do serwera który zaktualizuje notatke
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,8 @@ public class NoteEditActivity extends AppCompatActivity {
 
         try {
             Intent received_intent = getIntent();
+
+            // odbieramy auth_token i wybraną notatke z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
             note = received_intent.getParcelableExtra(MainActivity.noteExtra);
         } catch (JSONException e) {
@@ -44,7 +47,9 @@ public class NoteEditActivity extends AppCompatActivity {
         descriptionView.setText(note.description);
     }
 
+    // funkcja odpowiedzialna za aktualizację notatki
     public void updateNote(View view) {
+        // na podstawie wypełnionych pół podejmujemy decyzje o aktualizacji notatki
         if (validate()) {
             final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
             note.description = noteDesc.getText().toString();
@@ -54,6 +59,7 @@ public class NoteEditActivity extends AppCompatActivity {
         }
     }
 
+    // metoda walidująca wypełnione pola
     public boolean validate() {
         boolean valid = true;
 
@@ -71,6 +77,7 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
 
+    // PUT request do serwera aktualizujący na nim dane
     public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
 
         private final Integer mId;
@@ -98,7 +105,6 @@ public class NoteEditActivity extends AppCompatActivity {
                 httpcon.setRequestProperty("Content-Type", "application/json");
                 httpcon.setRequestProperty("Authorization", auth_token.get("auth_token").toString());
                 httpcon.setRequestMethod("PUT");
-//                httpcon.connect();
 
                 OutputStream os = httpcon.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
@@ -127,6 +133,9 @@ public class NoteEditActivity extends AppCompatActivity {
             return true;
         }
 
+        // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
+        // przekazanie obiektu a nie ponowne pobranie go pozwala zwiększyć wydajność aplikacji
+        // tym samym minimalizujemy niepotrzebne odniesienia do serwera
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();
             intent.putExtra(MainActivity.noteExtra, note);

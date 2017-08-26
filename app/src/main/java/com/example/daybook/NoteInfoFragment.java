@@ -1,6 +1,5 @@
 package com.example.daybook;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,24 +10,18 @@ import android.widget.TextView;
 
 import static com.example.daybook.MainActivity.myNotes;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
+// fragment odpowiedzialny za wyświeltanie wybranej notatki
 public class NoteInfoFragment extends Fragment {
     private Note mNote;
     private String auth_token;
     private Integer position;
 
     public NoteInfoFragment() {
-        // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_info, container, false);
 
         view.findViewById(R.id.noteEditButton).setOnClickListener(new View.OnClickListener() {
@@ -44,6 +37,7 @@ public class NoteInfoFragment extends Fragment {
         return view;
     }
 
+    // funkcja wyświetlająca notatke
     public void displayNote(Note note) {
         ((TextView) getActivity().findViewById(R.id.noteDescTextView)).setText(note.description);
     }
@@ -54,13 +48,14 @@ public class NoteInfoFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-        // display the task details
+        // odbieranmy wybraną notatke i auth_token z MainActivity
         mNote = intent.getParcelableExtra(MainActivity.noteExtra);
         auth_token = intent.getStringExtra("auth_token");
         position = intent.getIntExtra("position", 0);
         if(mNote != null) displayNote(mNote);
     }
 
+    // funkcja powrotu z ekranu edycji, aktuaizująca notatke na liście
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 8) {

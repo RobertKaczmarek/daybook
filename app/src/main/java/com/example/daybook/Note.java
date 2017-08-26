@@ -3,16 +3,12 @@ package com.example.daybook;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Robert Kaczmarek on 28-Jul-17.
- */
-
+// model notatki
 public class Note implements Parcelable {
-    public Integer id;
+    public Integer id; // do odwołań się na serwerze
     public String description;
 
     Note() {
-
     }
 
     Note(Integer i, String desc) {
@@ -37,6 +33,7 @@ public class Note implements Parcelable {
         }
     };
 
+    // metoda drukująca - w zaależności od treści opisu wyświetlamy inaczej an liście w MainActivity
     public String toString() {
         String desc;
         if (description.length() < 35) {
