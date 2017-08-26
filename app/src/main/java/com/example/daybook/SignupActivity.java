@@ -29,7 +29,7 @@ import java.net.URL;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-// activity odpowiedzialne za rejestracje
+// activity odpowiedzialne za rejestrację
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 

@@ -8,7 +8,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-// dialogo Delete do usuwania elementów z list
+// dialog Delete do usuwania elementów z list
 public class DeleteDialog extends DialogFragment {
     public interface NoticeDialogListener {
         public void onDataPositiveClick(DialogFragment dialog);

@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 // model alarmu
 public class Alarm implements Parcelable, Comparable<Alarm> {
-    public Integer id; // do odwołań się na serwerze
+    public Integer id; // do odwołań na serwerze
     public String time; // czas
     public PendingIntent intent; // intent alarmu
     boolean set; // zmienna informująca czy alarm jest ustawiony

@@ -14,7 +14,7 @@ public class DatePickerFragment extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // aktualna data ustawioana jako domyślna
+        // aktualna data ustawiana jako domyślna
         final DateTime calendar = new DateTime();
         int year = calendar.getYear();
         int month = calendar.getMonthOfYear();
@@ -26,7 +26,7 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         // zwracamy wybraną datę do odpowiedniej funkcji do odpowiedniego activity
-        // trzeba odróżnic które activity ją wywołuje, ponieważ inaczej sypie NullPointerami
+        // trzeba odróżnić, które activity ją wywołuje, ponieważ inaczej sypie NullPointerami
         if (this.getActivity().getClass() == EventCreateActivity.class) EventCreateActivity.setDate(day, month + 1, year);
         if (this.getActivity().getClass() == EventEditActivity.class) EventEditActivity.setDate(day, month + 1, year);
     }

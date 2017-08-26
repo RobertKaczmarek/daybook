@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
 
     public FloatingActionsMenu fab;
 
-    public static final String AUTH_TOKEN = "com.example.daybook.token"; // nazwaklucza do SharedPreferences gdzie przechowywane jest auth_token
+    public static final String AUTH_TOKEN = "com.example.daybook.token"; // nazwa klucza do SharedPreferences gdzie przechowywane jest auth_token
     public static final String TOKEN = "token";
     public static final String eventExtra = "Event";
     public static final String noteExtra = "Note";
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // jeżeli token nie jest zapsany w SharedPreferences, to wywołujemy activity w celu zalogowania się
+        // jeżeli token nie jest zapisany w SharedPreferences, to wywołujemy activity w celu zalogowania się
         if (!restoreToken()) {
             Intent intent = new Intent(pointer, LoginActivity.class);
             startActivityForResult(intent, 1);
@@ -230,15 +230,15 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
-    // funkcja odpowiedzialna za inicjacje aplikacji danmi użytkownika
+    // funkcja odpowiedzialna za inicjację aplikacji danymi użytkownika
     private void initialize() {
-        // czyścimy aplikacje
+        // oczyszczamy aplikację
         clearApp();
 
         // ustawiamy datę
         setDate();
 
-        // pobieramy każdy tych obiektów
+        // pobieramy każdy z obiektów
         // ustawiamy onItemClick i onItemLongClick listenery do list
         mSyncTask = new APISyncTask("events");
         mSyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     }
 
 
-    // uruchamia odpowiednie Info activity w zalezności jaki obiekt został naciśnięty
+    // uruchamia odpowiednie Info activity w zależności jaki obiekt został naciśnięty
     private void startSecondActivity(AdapterView<?> parent, int position, String action) {
         Intent intent = null;
         switch (action) {
@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 12345, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        // w zależności która godizna została wybrany, tak ustawiany jest alarm
+        // w zależności która godizna została wybrana, tak ustawiany jest alarm
         DateTime date;
         if (new LocalTime().isAfter(time)) {
             date = new DateTime()
@@ -459,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         return pendingIntent;
     }
 
-    // czyści aplikacje z danych użytkownika
+    // czyści aplikację z danych użytkownika
     private void clearApp() {
         myAlarms.clear();
         alarms = null;
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         Snackbar.make(v, "Delete canceled!", Snackbar.LENGTH_LONG).show();
     }
 
-    // zamyka FAB przy kliknięciu gdziekolwiek na ekran
+    // zamyka FAB przy kliknięciu gdziekolwiek na ekranie
     @Override
     public boolean dispatchTouchEvent(MotionEvent event){
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
     public void onResume() {
         super.onResume();
 
-        // informujemy adaptery o zmianach który mogły wystąpić wynikające z dodania nowego obiektu
+        // informujemy adaptery o zmianach które mogły wystąpić wynikające z dodania nowego obiektu
         // w którymś z Create activity
         EventListFragment eventFr = (EventListFragment) getSupportFragmentManager().findFragmentById(R.id.eventFragment);
         ArrayAdapter<Event> eventAdapter = (ArrayAdapter<Event>) eventFr.getListAdapter();
@@ -714,7 +714,7 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
         }
     }
 
-    // GET request do serwera wylogowywujący user - niszczony jest auth_token po stronie serwera
+    // GET request do serwera wylogowujący user - niszczony jest auth_token po stronie serwera
     public class UserLogoutTask extends AsyncTask<Void, Void, Boolean> {
 
         UserLogoutTask() {

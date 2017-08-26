@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         Log.d(TAG, "Login");
 
-        // sprawdzamy czy pola zostały poprawnie wypełnione
+        // sprawdzamy, czy pola zostały poprawnie wypełnione
         if (!validate()) {
             onLoginFailed();
             return;
@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _loginButton.setEnabled(false);
 
-        // ProcessDialog informujący że coś się dzieje w aplikacji
+        // ProcessDialog informujący, że coś się dzieje w aplikacji
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    // funkcja wywoułąca się po wróceniu z Signup activity - przekazywany z niej auth_token
+    // funkcja wywołująca się po wróceniu z Signup activity - przekazywany z niej auth_token
     // jest przekazywany dalej do MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    // funkcja wywołująca się po zakończeniu się połączenia z serwerem
+    // funkcja wywołująca się po zakończeniu połączenia z serwerem
     public void onLogin() {
         if (result != null) onLoginSuccess();
         else onLoginFailed();
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    // niepoprawne logowanie - użytkownika nie istnieje / błędne dane
+    // niepoprawne logowanie - użytkownik nie istnieje / błędne dane
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Invalid credentials.", Toast.LENGTH_LONG).show();
 

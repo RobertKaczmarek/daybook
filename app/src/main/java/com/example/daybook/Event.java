@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 // model wydarzenia
 public class Event implements Parcelable, Comparable<Event> {
-    public Integer id; // do odwołań się na serwerze
+    public Integer id; // do odwołań na serwerze
     public String title;
     public String description;
     public String date;

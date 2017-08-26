@@ -30,7 +30,7 @@ public class EventEditActivity extends AppCompatActivity {
 
     private static TextView dateView;
 
-    private APIUpdateTask mUpdateEventTask = null;  // callback do serwera który zaktualizuje wydarzenie
+    private APIUpdateTask mUpdateEventTask = null;  // callback do serwera, który zaktualizuje wydarzenie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +174,7 @@ public class EventEditActivity extends AppCompatActivity {
         }
 
         // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
-        // przekazanie obiektu a nie ponowne pobranie go pozwala zwiększyć wydajność aplikacji
+        // przekazanie obiektu - a nie ponowne pobranie go - pozwala zwiększyć wydajność aplikacji;
         // tym samym minimalizujemy niepotrzebne odniesienia do serwera
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();

@@ -26,7 +26,7 @@ public class NoteEditActivity extends AppCompatActivity {
 
     private JSONObject auth_token;
 
-    private APIUpdateTask mUpdateNoteTask = null; // callback do serwera który zaktualizuje notatke
+    private APIUpdateTask mUpdateNoteTask = null; // callback do serwera, który zaktualizuje notatkę
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class NoteEditActivity extends AppCompatActivity {
         try {
             Intent received_intent = getIntent();
 
-            // odbieramy auth_token i wybraną notatke z MainActivity
+            // odbieramy auth_token i wybraną notatkę z MainActivity
             auth_token = new JSONObject(received_intent.getStringExtra("auth_token"));
             note = received_intent.getParcelableExtra(MainActivity.noteExtra);
         } catch (JSONException e) {
@@ -49,7 +49,7 @@ public class NoteEditActivity extends AppCompatActivity {
 
     // funkcja odpowiedzialna za aktualizację notatki
     public void updateNote(View view) {
-        // na podstawie wypełnionych pół podejmujemy decyzje o aktualizacji notatki
+        // na podstawie wypełnionych pół podejmujemy decyzję o aktualizacji notatki
         if (validate()) {
             final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
             note.description = noteDesc.getText().toString();
@@ -134,7 +134,7 @@ public class NoteEditActivity extends AppCompatActivity {
         }
 
         // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
-        // przekazanie obiektu a nie ponowne pobranie go pozwala zwiększyć wydajność aplikacji
+        // przekazanie obiektu - a nie ponowne pobranie go - pozwala zwiększyć wydajność aplikacji
         // tym samym minimalizujemy niepotrzebne odniesienia do serwera
         protected void onPostExecute(Boolean result) {
             Intent intent = new Intent();

@@ -51,13 +51,13 @@ public class AlarmReceiverActivity extends Activity {
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
 
-        // iterator dla listy z wydarzeniamy
+        // iterator dla listy z wydarzeniami
         Iterator mEventsIterator = mEvents.iterator();
 
         // aktualna data
         String todayDate = new DateTime(DateTime.now()).toString("dd-MM-yyyy");
 
-        // sprawdzamy które wydrzenie jest na aktualny dzień - dzień alarmu
+        // sprawdzamy, które wydrzenie jest na aktualny dzień - dzień alarmu
         while (mEventsIterator.hasNext()) {
             Event event = (Event) mEventsIterator.next();
             if (new DateTime(event.date).toString("dd-MM-yyyy").equals(todayDate)) {
@@ -97,7 +97,7 @@ public class AlarmReceiverActivity extends Activity {
         vibrator.vibrate(pattern, 0);
     }
 
-    // funkcja inicjujące dane - ustawia wydarzenia do listy, dodaje ich opisy
+    // funkcja inicjująca dane - ustawia wydarzenia do listy, dodaje ich opisy
     private void initData() {
         mListEvents = new ArrayList<String>();
         listHash = new HashMap<>();
@@ -130,8 +130,8 @@ public class AlarmReceiverActivity extends Activity {
         }
     }
 
-    // funkcja pobierająca dźwięk alarmu - jak jest ustawiony to go bierze, jak nie do dźwięk notyfikacji,
-    // jak ten też nie ustawiony do dzwonek
+    // funkcja pobierająca dźwięk alarmu - jak jest ustawiony to go bierze, jak nie, to dźwięk notyfikacji,
+    // jak ten też nie ustawiony - to dzwonek
     private Uri getAlarmUri() {
         Uri alert = RingtoneManager
                 .getDefaultUri(RingtoneManager.TYPE_ALARM);

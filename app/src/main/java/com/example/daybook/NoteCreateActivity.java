@@ -22,7 +22,7 @@ import java.net.URL;
 
 // activity odpowiedzialne za tworzenie notatki
 public class NoteCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateNoteTask = null; // callback do serwera w celu utworzenia nowego wydareznia
+    private APICreateTask mCreateNoteTask = null; // callback do serwera w celu utworzenia nowego wydarzenia
     private JSONObject auth_token; // token autoryzacji
 
     private static String description;

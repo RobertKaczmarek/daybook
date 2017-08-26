@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 // model notatki
 public class Note implements Parcelable {
-    public Integer id; // do odwołań się na serwerze
+    public Integer id; // do odwołań na serwerze
     public String description;
 
     Note() {
@@ -33,7 +33,7 @@ public class Note implements Parcelable {
         }
     };
 
-    // metoda drukująca - w zaależności od treści opisu wyświetlamy inaczej an liście w MainActivity
+    // metoda drukująca - w zależności od treści opisu wyświetlamy inaczej na liście w MainActivity
     public String toString() {
         String desc;
         if (description.length() < 35) {

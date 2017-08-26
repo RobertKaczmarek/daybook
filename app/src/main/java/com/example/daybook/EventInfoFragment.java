@@ -17,7 +17,7 @@ public class EventInfoFragment extends Fragment {
     private Event mEvent; // wybrane wydarzenie
     private String auth_token; // token autoryzacji
     private Integer position; // pozycja na liście,
-    // potrzebna podczas gdy użytkownik będzie chciał zaktualizować wydarzenie z tego panelu
+    // potrzebna podczas, gdy użytkownik będzie chciał zaktualizować wydarzenie z tego panelu
 
     public EventInfoFragment() {
     }
@@ -53,7 +53,7 @@ public class EventInfoFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-        // pobieramy wybrane wydarzenie, token oraz pozycje na liście
+        // pobieramy wybrane wydarzenie, token oraz pozycję na liście
         mEvent = intent.getParcelableExtra(MainActivity.eventExtra);
         auth_token = intent.getStringExtra("auth_token");
         position = intent.getIntExtra("position", 0);
@@ -62,8 +62,8 @@ public class EventInfoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // 9 - oznacza powrót z activity, które pozwala na aktualizacje wydarzenia
-        // trzeba wybrane wydarzenie zaktualizować na głównej liście i wyświetlnić je
+        // 9 - oznacza powrót z activity, które pozwala na aktualizację wydarzenia
+        // trzeba wybrane wydarzenie zaktualizować na głównej liście i wyświetlić je
         if (resultCode == 9) {
             try {
                 Event event = data.getParcelableExtra(MainActivity.eventExtra);

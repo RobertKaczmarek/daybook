@@ -25,7 +25,7 @@ import java.net.URL;
 
 // activity odpowiedzialne za tworzenie nowych wydarzeń
 public class EventCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateEventTask = null; // callback do serwera w celu utworzenia nowego wydareznia
+    private APICreateTask mCreateEventTask = null; // callback do serwera w celu utworzenia nowego wydarzenia
     private JSONObject auth_token; // token autoryzacji
 
     private static TextView dateView; // TextView do wybierania i wyświetlania daty
@@ -53,7 +53,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
     // funkcja odpowiedzialna za tworzenie nowego wydarzenia
     public void createEvent(View view) {
-        // walidacja czy pola są odpowiednio wypełnione
+        // walidacja, czy pola są odpowiednio wypełnione
         if (validate()) {
             final EditText eventTitle = (EditText) findViewById(R.id.eventCreateTitle);
             title =  eventTitle.getText().toString();
@@ -61,7 +61,7 @@ public class EventCreateActivity extends AppCompatActivity {
             final EditText eventDesc = (EditText) findViewById(R.id.eventCreateDescription);
             description = eventDesc.getText().toString();
 
-            // zapobiega crashowaniu się aplikacji gdy data nie została wybrana
+            // zapobiega crashowaniu się aplikacji, gdy data nie została wybrana
             if (date == null) date = new DateTime().toString("dd-MM-yyyy");
 
             // asynchroniczne zadanie wykonujące request do serwera
@@ -76,7 +76,7 @@ public class EventCreateActivity extends AppCompatActivity {
         newFragment.show(getFragmentManager(), "datePicker");
     }
 
-    // funkcja przypisujące datę do zmiennej
+    // funkcja przypisująca datę do zmiennej
     public static void setDate(Integer day, Integer month, Integer year) {
         date = day + "-" + month + "-" + year;
 

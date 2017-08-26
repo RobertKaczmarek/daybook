@@ -37,7 +37,7 @@ public class NoteInfoFragment extends Fragment {
         return view;
     }
 
-    // funkcja wyświetlająca notatke
+    // funkcja wyświetlająca notatkę
     public void displayNote(Note note) {
         ((TextView) getActivity().findViewById(R.id.noteDescTextView)).setText(note.description);
     }
@@ -55,7 +55,7 @@ public class NoteInfoFragment extends Fragment {
         if(mNote != null) displayNote(mNote);
     }
 
-    // funkcja powrotu z ekranu edycji, aktuaizująca notatke na liście
+    // funkcja powrotu z ekranu edycji, aktuaizująca notatkę na liście
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 8) {

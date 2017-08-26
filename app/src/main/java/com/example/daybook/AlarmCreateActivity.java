@@ -24,7 +24,7 @@ import java.net.URL;
 
 // activity do tworzenia nowych alarmów
 public class AlarmCreateActivity extends AppCompatActivity {
-    private APICreateTask mCreateAlarmTask = null; // callback do serwera który utowrzy na nim alarm
+    private APICreateTask mCreateAlarmTask = null; // callback do serwera, który utworzy na nim alarm
     private JSONObject auth_token; // token autoryzacji
 
     private static TextView timeView; // TextView używane do ustawiania i wyświetlania godziny
@@ -49,7 +49,7 @@ public class AlarmCreateActivity extends AppCompatActivity {
 
     // funkcja uruchamiająca asynchroniczny task, który jest odwołaniem się do serwera
     public void createAlarm(View view) {
-        // zapobiega crashowaniu się aplikacji przy nie wybranym czasie alarmu
+        // zapobiega crashowaniu się aplikacji przy nie wybraniu czasu alarmu
         if (time == null) time = new LocalTime().toString("HH:mm");
 
         // asynchroniczne zadanie wykonujące request do serwera

@@ -20,13 +20,13 @@ public class TimePickerFragment extends DialogFragment
         int hour = c.getHourOfDay();
         int minute = c.getMinuteOfHour();
 
-        // tworzy nową instancję dialogu i jązwraca
+        // tworzy nową instancję dialogu i ją zwraca
         return new TimePickerDialog(getActivity(), this, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // wywołujemy odpowiednią funkcję żeby ustawić wybrany czas
+        // wywołujemy odpowiednią funkcję, żeby ustawić wybrany czas
         AlarmCreateActivity.setTime(hourOfDay, minute);
     }
 }
