@@ -51,6 +51,7 @@ public class AlarmReceiverActivity extends Activity {
         // otrzymujemy wydarzenia
         Intent received_intent = getIntent();
         mEvents = (ArrayList<Event>) received_intent.getSerializableExtra((MainActivity.eventExtra));
+        mAlarm = received_intent.getParcelableExtra(MainActivity.alarmExtra);
 
         // iterator dla listy z wydarzeniami
         Iterator mEventsIterator = mEvents.iterator();

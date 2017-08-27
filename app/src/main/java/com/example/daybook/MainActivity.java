@@ -448,13 +448,17 @@ public class MainActivity extends AppCompatActivity implements DeleteDialog.Noti
             date = new DateTime()
                     .withDayOfMonth(new DateTime().getDayOfMonth() + 1)
                     .withHourOfDay(time.getHourOfDay())
-                    .withMinuteOfHour(time.getMinuteOfHour());
+                    .withMinuteOfHour(time.getMinuteOfHour())
+                    .withSecondOfMinute(0)
+                    .withMillisOfDay(0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
         }
         else {
             date = new DateTime()
                     .withHourOfDay(time.getHourOfDay())
-                    .withMinuteOfHour(time.getMinuteOfHour());
+                    .withMinuteOfHour(time.getMinuteOfHour())
+                    .withSecondOfMinute(0)
+                    .withMillisOfDay(0);
             alarmManager.set(AlarmManager.RTC_WAKEUP, date.getMillis(), pendingIntent);
         }
 
