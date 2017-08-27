@@ -8,72 +8,69 @@ import org.joda.time.DateTime;
 
 import java.util.Comparator;
 
-/**
- * Created by Robert Kaczmarek on 26-Jul-17.
- */
-
+// model wydarzenia
 public class Event implements Parcelable, Comparable<Event> {
-    public Integer id;
-    public String title;
-    public String description;
-    public String date;
+  public Integer id; // do odwołań na serwerze
+  public String title;
+  public String description;
+  public String date;
 
-    Event() {
+  Event() {
+  }
 
-    }
+  Event(Integer i, String t, String d, String dt) {
+    id = i;
+    title = t;
+    description = d;
+    date = dt;
+  }
 
-    Event(Integer i, String t, String d, String dt) {
-        id = i;
-        title = t;
-        description = d;
-        date = dt;
-    }
+  protected Event(Parcel in) {
+    id = in.readInt();
+    title = in.readString();
+    description = in.readString();
+    date = in.readString();
+  }
 
-    protected Event(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        description = in.readString();
-        date = in.readString();
-    }
-
-    public static final Creator<Event> CREATOR = new Creator<Event>() {
-        @Override
-        public Event createFromParcel(Parcel in) {
-            return new Event(in);
-        }
-
-        @Override
-        public Event[] newArray(int size) {
-            return new Event[size];
-        }
-    };
-
+  public static final Creator<Event> CREATOR = new Creator<Event>() {
     @Override
-    public String toString() {
-        return title;
+    public Event createFromParcel(Parcel in) {
+      return new Event(in);
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public Event[] newArray(int size) {
+      return new Event[size];
     }
+  };
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(title);
-        parcel.writeString(description);
-        parcel.writeString(date);
+  @Override
+  public String toString() {
+    return title;
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeInt(id);
+    parcel.writeString(title);
+    parcel.writeString(description);
+    parcel.writeString(date);
+  }
+
+  // własny komparator wykorzystywany do sortowania elementów na liście
+  public static final Comparator<Event> DESCENDING_COMPARATOR = new Comparator<Event>() {
+    public int compare(Event l, Event r) {
+      return new DateTime(l.date).compareTo(new DateTime(r.date));
     }
+  };
 
-    public static final Comparator<Event> DESCENDING_COMPARATOR = new Comparator<Event>() {
-        public int compare(Event l, Event r) {
-            return new DateTime(l.date).compareTo(new DateTime(r.date));
-        }
-    };
-
-    @Override
-    public int compareTo(@NonNull Event event) {
-        return new DateTime(this.date).compareTo(new DateTime(event.date));
-    }
+  @Override
+  public int compareTo(@NonNull Event event) {
+    return new DateTime(this.date).compareTo(new DateTime(event.date));
+  }
 }

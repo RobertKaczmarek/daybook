@@ -49,8 +49,8 @@
         android:layout_width="217dp"
         android:layout_height="wrap_content"
         android:onClick="showDatePickerDialog"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
         android:paddingStart="50dp"
         android:paddingEnd="10dp"
         android:text="Event's date"
@@ -58,12 +58,10 @@
 
     <Button
         android:id="@+id/saveCreateEvent"
-        android:layout_height="wrap_content"
-        android:text="@string/createEvent"
-        android:background="@color/jet"
-        android:textColor="@color/white"
-        android:onClick="createEvent"
         android:layout_width="fill_parent"
-        android:layout_marginBottom="60dp">
-    </Button>
+        android:layout_height="wrap_content"
+        android:background="@color/jet"
+        android:onClick="createEvent"
+        android:text="@string/createEvent"
+        android:textColor="@color/white"></Button>
 </LinearLayout>

@@ -1,29 +1,20 @@
 package com.example.daybook;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+// lista alarmów
 public class AlarmListFragment extends ListFragment {
 
+  public AlarmListFragment() {
+  }
 
-    public AlarmListFragment() {
-        // Required empty public constructor
-    }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setListAdapter(new ArrayAdapter<Alarm>(getActivity(), R.layout.alarm_list_layout,
-                android.R.id.text1, MainActivity.myAlarms));
-    }
+    setListAdapter(new ArrayAdapter<Alarm>(getActivity(), R.layout.alarm_list_layout,
+      android.R.id.text1, MainActivity.myAlarms));
+  }
 }
