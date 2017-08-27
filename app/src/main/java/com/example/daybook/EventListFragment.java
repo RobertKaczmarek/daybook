@@ -6,14 +6,14 @@ import android.widget.ArrayAdapter;
 
 public class EventListFragment extends ListFragment {
 
-    public EventListFragment() {
-    }
+  public EventListFragment() {
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Event>(getActivity(), R.layout.list_layout,
-                android.R.id.text1, MainActivity.myEvents));
-    }
+    setListAdapter(new ArrayAdapter<Event>(getActivity(), R.layout.list_layout,
+      android.R.id.text1, MainActivity.myEvents));
+  }
 }

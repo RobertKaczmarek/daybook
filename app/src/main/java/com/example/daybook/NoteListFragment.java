@@ -7,15 +7,15 @@ import android.widget.ArrayAdapter;
 public class NoteListFragment extends ListFragment {
 
 
-    public NoteListFragment() {
-    }
+  public NoteListFragment() {
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<Note>(getActivity(), R.layout.list_layout,
-                android.R.id.text1, MainActivity.myNotes));
-    }
+    setListAdapter(new ArrayAdapter<Note>(getActivity(), R.layout.list_layout,
+      android.R.id.text1, MainActivity.myNotes));
+  }
 
 }

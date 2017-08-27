@@ -22,120 +22,120 @@ import java.net.URL;
 
 // activity odpowiedzialne za edycje notatki
 public class NoteEditActivity extends AppCompatActivity {
-    private static Note note;
+  private static Note note;
 
-    private String auth_token;
+  private String auth_token;
 
-    private APIUpdateTask mUpdateNoteTask = null; // callback do serwera, który zaktualizuje notatkę
+  private APIUpdateTask mUpdateNoteTask = null; // callback do serwera, który zaktualizuje notatkę
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_note_edit);
+
+    Intent received_intent = getIntent();
+
+    // odbieramy auth_token i wybraną notatkę z MainActivity
+    auth_token = received_intent.getStringExtra("auth_token");
+    note = received_intent.getParcelableExtra(MainActivity.noteExtra);
+
+    EditText descriptionView = (EditText) findViewById(R.id.noteEditDescription);
+    descriptionView.setText(note.description);
+  }
+
+  // funkcja odpowiedzialna za aktualizację notatki
+  public void updateNote(View view) {
+    // na podstawie wypełnionych pół podejmujemy decyzję o aktualizacji notatki
+    if (validate()) {
+      final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
+      note.description = noteDesc.getText().toString();
+
+      mUpdateNoteTask = new APIUpdateTask(note.id, note.description);
+      mUpdateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+    }
+  }
+
+  // metoda walidująca wypełnione pola
+  public boolean validate() {
+    boolean valid = true;
+
+    final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
+    String description = noteDesc.getText().toString();
+
+    if (description.isEmpty()) {
+      noteDesc.setError("description cannot be blank!");
+      valid = false;
+    } else {
+      noteDesc.setError(null);
+    }
+
+    return valid;
+  }
+
+
+  // PUT request do serwera aktualizujący na nim dane
+  public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
+
+    private final Integer mId;
+    private final String mDescirption;
+
+    APIUpdateTask(Integer id, String desc) {
+      mId = id;
+      mDescirption = desc;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_edit);
+    protected Boolean doInBackground(Void... params) {
+      JSONObject json = new JSONObject();
+      try {
+        json.put("description", mDescirption);
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
 
-        Intent received_intent = getIntent();
+      HttpURLConnection httpcon;
+      String url = "https://daybook-backend.herokuapp.com/notes/" + mId;
+      try {
+        httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
+        httpcon.setDoOutput(true);
+        httpcon.setRequestProperty("Content-Type", "application/json");
+        httpcon.setRequestProperty("Authorization", auth_token);
+        httpcon.setRequestMethod("PUT");
 
-        // odbieramy auth_token i wybraną notatkę z MainActivity
-        auth_token = received_intent.getStringExtra("auth_token");
-        note = received_intent.getParcelableExtra(MainActivity.noteExtra);
+        OutputStream os = httpcon.getOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        writer.write(json.toString());
+        writer.close();
+        os.close();
 
-        EditText descriptionView = (EditText) findViewById(R.id.noteEditDescription);
-        descriptionView.setText(note.description);
+        BufferedReader br = new BufferedReader(new InputStreamReader(httpcon.getInputStream(), "UTF-8"));
+
+        String line = null;
+        StringBuilder sb = new StringBuilder();
+
+        while ((line = br.readLine()) != null) {
+          sb.append(line);
+        }
+
+        br.close();
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      return true;
     }
 
-    // funkcja odpowiedzialna za aktualizację notatki
-    public void updateNote(View view) {
-        // na podstawie wypełnionych pół podejmujemy decyzję o aktualizacji notatki
-        if (validate()) {
-            final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
-            note.description = noteDesc.getText().toString();
+    // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
+    // przekazanie obiektu - a nie ponowne pobranie go - pozwala zwiększyć wydajność aplikacji
+    // tym samym minimalizujemy niepotrzebne odniesienia do serwera
+    protected void onPostExecute(Boolean result) {
+      Intent intent = new Intent();
+      intent.putExtra(MainActivity.noteExtra, note);
 
-            mUpdateNoteTask = new APIUpdateTask(note.id, note.description);
-            mUpdateNoteTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[])null);
-        }
+      setResult(8, intent);
+      finish();
     }
-
-    // metoda walidująca wypełnione pola
-    public boolean validate() {
-        boolean valid = true;
-
-        final EditText noteDesc = (EditText) findViewById(R.id.noteEditDescription);
-        String description = noteDesc.getText().toString();
-
-        if (description.isEmpty()) {
-            noteDesc.setError("description cannot be blank!");
-            valid = false;
-        } else {
-            noteDesc.setError(null);
-        }
-
-        return valid;
-    }
-
-
-    // PUT request do serwera aktualizujący na nim dane
-    public class APIUpdateTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final Integer mId;
-        private final String mDescirption;
-
-        APIUpdateTask(Integer id, String desc) {
-            mId = id;
-            mDescirption = desc;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            JSONObject json = new JSONObject();
-            try {
-                json.put("description", mDescirption);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            HttpURLConnection httpcon;
-            String url = "https://daybook-backend.herokuapp.com/notes/" + mId;
-            try {
-                httpcon = (HttpURLConnection) ((new URL(url).openConnection()));
-                httpcon.setDoOutput(true);
-                httpcon.setRequestProperty("Content-Type", "application/json");
-                httpcon.setRequestProperty("Authorization", auth_token);
-                httpcon.setRequestMethod("PUT");
-
-                OutputStream os = httpcon.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-                writer.write(json.toString());
-                writer.close();
-                os.close();
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(httpcon.getInputStream(), "UTF-8"));
-
-                String line = null;
-                StringBuilder sb = new StringBuilder();
-
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                br.close();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return true;
-        }
-
-        // funkcja wykonująca się po zawartości AsyncTask - przekazuje zaktualiony obiekt do MainActivity
-        // przekazanie obiektu - a nie ponowne pobranie go - pozwala zwiększyć wydajność aplikacji
-        // tym samym minimalizujemy niepotrzebne odniesienia do serwera
-        protected void onPostExecute(Boolean result) {
-            Intent intent = new Intent();
-            intent.putExtra(MainActivity.noteExtra, note);
-
-            setResult(8, intent);
-            finish();
-        }
-    }
+  }
 }
